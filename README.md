@@ -53,30 +53,30 @@ Utilizamos o padrão **Conventional Commits** para que o histórico seja legíve
 * **Código Limpo:** Remova `console.log`, comentários de teste ou códigos comentados antes de enviar o PR.
 
 
-### 🛠️ Passo a Passo: Criando e Enviando sua Branch
+# 🛠️ Passo a Passo: Criando e Enviando sua Branch
 
 Siga estes comandos no terminal para garantir que seu trabalho esteja isolado e organizado:
 
-#### 1. Sincronize seu repositório local
+## 1. Sincronize seu repositório local
 Antes de iniciar qualquer tarefa, garanta que você tem a versão mais recente do código oficial:
 git checkout main
 git pull origin main
 
-#### 2. Crie e mude para a nova branch
+## 2. Crie e mude para a nova branch
 Use o padrão tipo/descricao-da-tarefa. O comando -b cria a branch e já faz o "switch" para ela:
-# Exemplo: git checkout -b feat/login-social
+#### Exemplo: git checkout -b feat/login-social
 git checkout -b tipo/descricao-da-tarefa
 
-#### 3. Salve suas alterações (Commit)
+## 3. Salve suas alterações (Commit)
 Após codificar, adicione os arquivos ao palco (stage) e crie um commit descritivo:
 git add .
 git commit -m "tipo: descrição curta do que foi feito"
 
-#### 4. Envie a branch para o GitHub (Push)
+## 4. Envie a branch para o GitHub (Push)
 Na primeira vez que enviar a branch, use o comando abaixo para conectar sua branch local ao servidor:
 git push -u origin nome-da-sua-branch
 
-#### 5. Abra o Pull Request (PR)
+## 5. Abra o Pull Request (PR)
 - Vá até a página do seu repositório no GitHub.
 
 - Clique no botão amarelo/verde "Compare & pull request" que aparecerá no topo.
