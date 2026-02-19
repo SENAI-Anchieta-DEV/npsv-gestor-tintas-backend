@@ -33,7 +33,7 @@ public class Usuario {
     private String senha;
 
     @Column(nullable = false)
-    protected boolean ativo = true;
+    private boolean ativo = true;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
