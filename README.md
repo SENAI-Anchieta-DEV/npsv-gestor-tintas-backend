@@ -59,7 +59,6 @@ Siga estes comandos no terminal para garantir que seu trabalho esteja isolado e 
 
 #### 1. Sincronize seu repositório local
 Antes de iniciar qualquer tarefa, garanta que você tem a versão mais recente do código oficial:
-```bash
 git checkout main
 git pull origin main
 
@@ -78,12 +77,12 @@ Na primeira vez que enviar a branch, use o comando abaixo para conectar sua bran
 git push -u origin nome-da-sua-branch
 
 #### 5. Abra o Pull Request (PR)
-Vá até a página do seu repositório no GitHub.
+- Vá até a página do seu repositório no GitHub.
 
-Clique no botão amarelo/verde "Compare & pull request" que aparecerá no topo.
+- Clique no botão amarelo/verde "Compare & pull request" que aparecerá no topo.
 
-Adicione uma descrição clara do que foi alterado.
+- Adicione uma descrição clara do que foi alterado.
 
-Marque os Assignees (você e colegas) e solicite um Reviewer.
+- Marque os Assignees (você e colegas) e solicite um Reviewer.
 
 #### Dica: Se precisar voltar para a branch principal para testar algo, use git checkout main. Nunca trabalhe na main diretamente!
