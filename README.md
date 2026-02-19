@@ -52,6 +52,8 @@ Utilizamos o padrão **Conventional Commits** para que o histórico seja legíve
 * **Mantenha o escopo:** Se você está corrigindo um bug, não aproveite para mudar a cor de um botão em outra página. Crie outra branch para isso.
 * **Código Limpo:** Remova `console.log`, comentários de teste ou códigos comentados antes de enviar o PR.
 
+---
+
 
 # 🛠️ Passo a Passo: Criando e Enviando sua Branch
 
