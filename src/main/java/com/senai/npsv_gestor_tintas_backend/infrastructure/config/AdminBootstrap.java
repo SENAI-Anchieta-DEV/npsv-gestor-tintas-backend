@@ -1,8 +1,8 @@
 package com.senai.npsv_gestor_tintas_backend.infrastructure.config;
 
-import com.senai.npsv_gestor_tintas_backend.domain.entity.Gerente;
+import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.Role;
-import com.senai.npsv_gestor_tintas_backend.domain.repository.GerenteRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AdminBootstrap implements CommandLineRunner {
 
-    private final GerenteRepository gerenteRepository;
+    private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${sistema.admin.email}")
@@ -24,22 +24,22 @@ public class AdminBootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        gerenteRepository.findByEmail(adminEmail).ifPresentOrElse(
-                gerente -> {
-                    if (!gerente.isAtivo()) {
-                        gerente.setAtivo(true);
-                        gerenteRepository.save(gerente);
+        usuarioRepository.findByEmail(adminEmail).ifPresentOrElse(
+                admin -> {
+                    if (!admin.isAtivo()) {
+                        admin.setAtivo(true);
+                        usuarioRepository.save(admin);
                     }
                 },
                 () -> {
-                    Gerente admin = Gerente.builder()
+                    Usuario admin = Usuario.builder()
                             .ativo(true)
                             .nome("Administrador Provisório")
                             .email(adminEmail)
                             .senha(passwordEncoder.encode(adminSenha))
                             .role(Role.ADMIN)
                             .build();
-                    gerenteRepository.save(admin);
+                    usuarioRepository.save(admin);
                     System.out.println("⚡ Usuário admin provisório criado: " + adminEmail);
                 }
         );
