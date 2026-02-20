@@ -18,7 +18,7 @@ public class UsuarioService {
     private final PasswordEncoder encoder;
 
     public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO dto) {
-        if (repository.findByEmail(dto.email()).isPresent()) {
+        if (repository.findByEmailAndAtivoTrue(dto.email()).isPresent()) {
             throw new IllegalArgumentException("Este e-mail já está em uso.");
         }
 
@@ -36,12 +36,17 @@ public class UsuarioService {
     }
 
     public UsuarioResponseDTO listarUsuarioPorEmail(String email) {
-        var usuario = getUsuarioByEmail(email);
+        var usuario = buscarUsuarioAtivoPorEmail(email);
+        return new UsuarioResponseDTO(usuario);
+    }
+
+    public UsuarioResponseDTO listarUsuarioPorId(String id) {
+        var usuario = BuscarUsuarioAtivoPorId(id);
         return new UsuarioResponseDTO(usuario);
     }
 
     public UsuarioResponseDTO atualizarUsuario(String email, UsuarioRequestDTO dto) {
-        var usuario = getUsuarioByEmail(email);
+        var usuario = buscarUsuarioAtivoPorEmail(email);
 
         usuario.setNome(dto.nome());
         usuario.setRole(dto.role());
@@ -50,14 +55,25 @@ public class UsuarioService {
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 
+    public UsuarioResponseDTO atualizarSenhaUsuario(String email, String novaSenha) {
+        var usuario = buscarUsuarioAtivoPorEmail(email);
+        usuario.setSenha(encoder.encode(novaSenha));
+        return UsuarioResponseDTO.fromEntity(repository.save(usuario));
+    }
+
     public void deletarUsuario(String email) {
-        var usuario = getUsuarioByEmail(email);
+        var usuario = buscarUsuarioAtivoPorEmail(email);
         usuario.setAtivo(false);
         repository.save(usuario);
     }
 
-    private Usuario getUsuarioByEmail(String email) {
-        return repository.findByEmail(email)
+    private Usuario buscarUsuarioAtivoPorEmail(String email) {
+        return repository.findByEmailAndAtivoTrue(email)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+    }
+
+    private Usuario BuscarUsuarioAtivoPorId(String id) {
+        return repository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
     }
 }
