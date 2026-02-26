@@ -19,7 +19,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@RequestBody UsuarioRequestDTO dto) {
         UsuarioResponseDTO novoUsuario = service.registrarUsuario(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario); // Corrigir resposta Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
     @GetMapping
@@ -43,9 +43,9 @@ public class UsuarioController {
         return ResponseEntity.ok(service.atualizarUsuario(email, dto));
     }
 
-    @PutMapping("/email/{email}")
+    @PatchMapping("/email/{email}")
     public ResponseEntity<UsuarioResponseDTO> atualizarSenhaUsuario(@PathVariable String email,
-                                                               @RequestBody String novaSenha) {
+                                                                    @RequestBody String novaSenha) {
         return ResponseEntity.ok(service.atualizarSenhaUsuario(email, novaSenha));
     }
 

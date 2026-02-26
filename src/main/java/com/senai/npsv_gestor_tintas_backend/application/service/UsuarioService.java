@@ -69,11 +69,11 @@ public class UsuarioService {
 
     private Usuario buscarUsuarioAtivoPorEmail(String email) {
         return repository.findByEmailAndAtivoTrue(email)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado ou inativo"));
     }
 
     private Usuario BuscarUsuarioAtivoPorId(String id) {
         return repository.findByIdAndAtivoTrue(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado ou inativo"));
     }
 }
