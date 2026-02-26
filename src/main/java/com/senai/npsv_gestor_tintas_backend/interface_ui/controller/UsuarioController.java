@@ -43,7 +43,7 @@ public class UsuarioController {
         return ResponseEntity.ok(service.atualizarUsuario(email, dto));
     }
 
-    @PatchMapping("/email/{email}")
+    @PatchMapping("/email/{email}/senha")
     public ResponseEntity<UsuarioResponseDTO> atualizarSenhaUsuario(@PathVariable String email,
                                                                     @RequestBody String novaSenha) {
         return ResponseEntity.ok(service.atualizarSenhaUsuario(email, novaSenha));
