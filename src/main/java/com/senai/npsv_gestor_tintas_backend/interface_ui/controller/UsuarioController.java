@@ -19,7 +19,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@RequestBody UsuarioRequestDTO dto) {
         UsuarioResponseDTO novoUsuario = service.registrarUsuario(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario); // Corrigir resposta Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
 
     @GetMapping
@@ -32,10 +32,21 @@ public class UsuarioController {
         return ResponseEntity.ok(service.listarUsuarioPorEmail(email));
     }
 
+    @GetMapping("/id/{id}")
+    public ResponseEntity<UsuarioResponseDTO> listarUsuarioPorId(@PathVariable String id) {
+        return ResponseEntity.ok(service.listarUsuarioPorId(id));
+    }
+
     @PutMapping ("/email/{email}")
     public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(@PathVariable String email,
                                                                @RequestBody UsuarioRequestDTO dto) {
         return ResponseEntity.ok(service.atualizarUsuario(email, dto));
+    }
+
+    @PatchMapping("/email/{email}")
+    public ResponseEntity<UsuarioResponseDTO> atualizarSenhaUsuario(@PathVariable String email,
+                                                                    @RequestBody String novaSenha) {
+        return ResponseEntity.ok(service.atualizarSenhaUsuario(email, novaSenha));
     }
 
     @DeleteMapping ("/email/{email}")
