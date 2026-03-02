@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/itens-formula/")
+@RequestMapping("/api/itens-formula")
 @RequiredArgsConstructor
 public class ItemFormulaController {
 }

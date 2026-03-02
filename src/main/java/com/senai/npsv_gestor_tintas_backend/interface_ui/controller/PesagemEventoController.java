@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/pesagem-eventos/")
+@RequestMapping("/api/pesagem-eventos")
 @RequiredArgsConstructor
 public class PesagemEventoController {
 }
