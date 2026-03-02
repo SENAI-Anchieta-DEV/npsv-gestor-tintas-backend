@@ -3,6 +3,7 @@ package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.UsuarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class UsuarioController {
     private final UsuarioService service;
 
     @PostMapping
-    public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@RequestBody UsuarioRequestDTO dto) {
+    public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@Valid @RequestBody UsuarioRequestDTO dto) {
         UsuarioResponseDTO novoUsuario = service.registrarUsuario(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
     }
@@ -39,18 +40,18 @@ public class UsuarioController {
 
     @PutMapping ("/email/{email}")
     public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(@PathVariable String email,
-                                                               @RequestBody UsuarioRequestDTO dto) {
+                                                               @Valid @RequestBody UsuarioRequestDTO dto) {
         return ResponseEntity.ok(service.atualizarUsuario(email, dto));
     }
 
     @PatchMapping("/email/{email}/senha")
     public ResponseEntity<UsuarioResponseDTO> atualizarSenhaUsuario(@PathVariable String email,
-                                                                    @RequestBody String novaSenha) {
+                                                                    @Valid @RequestBody String novaSenha) {
         return ResponseEntity.ok(service.atualizarSenhaUsuario(email, novaSenha));
     }
 
     @DeleteMapping ("/email/{email}")
-    public ResponseEntity<Void> deletarUsuario(@PathVariable String email) {
+    public ResponseEntity<Void> deletarUsuario(@Valid @PathVariable String email) {
         service.deletarUsuario(email);
         return ResponseEntity.noContent().build();
     }
