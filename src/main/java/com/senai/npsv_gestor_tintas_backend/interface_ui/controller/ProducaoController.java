@@ -17,7 +17,6 @@ public class ProducaoController {
 
     private final ProducaoService producaoService;
 
-    // CREATE (C - POST)
     @PostMapping
     public ResponseEntity<Producao> criarProducao(@RequestBody Producao producao) {
         Producao novaProducao = producaoService.iniciarProducao(producao);
@@ -30,39 +29,30 @@ public class ProducaoController {
         return ResponseEntity.created(uri).body(novaProducao);
     }
 
-    // READ ALL (R - GET)
     @GetMapping
     public ResponseEntity<List<Producao>> listarTodas() {
         List<Producao> producoes = producaoService.buscarTodas();
         return ResponseEntity.ok(producoes);
     }
 
-    // READ BY ID (R - GET)
     @GetMapping("/{id}")
     public ResponseEntity<Producao> buscarPorId(@PathVariable String id) {
         Producao producao = producaoService.buscarPorId(id);
         return ResponseEntity.ok(producao);
     }
 
-    // UPDATE (U - PUT)
     @PutMapping("/{id}")
     public ResponseEntity<Producao> atualizarProducao(@PathVariable String id, @RequestBody Producao producao) {
         Producao producaoAtualizada = producaoService.atualizar(id, producao);
         return ResponseEntity.ok(producaoAtualizada);
     }
 
-    // DELETE (D - DELETE)
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarProducao(@PathVariable String id) {
         producaoService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 
-    // ==========================================
-    // ENDPOINTS ESPECÍFICOS DE REGRAS DE NEGÓCIO
-    // ==========================================
-
-    // Endpoint auxiliar para testar a conclusão da tarefa NPSV-238
     @PatchMapping("/{id}/concluir")
     public ResponseEntity<Producao> concluirProducao(@PathVariable String id) {
         Producao producaoConcluida = producaoService.concluirProducaoSimulada(id);
