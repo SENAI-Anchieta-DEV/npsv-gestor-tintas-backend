@@ -29,4 +29,8 @@ public class ItemVenda {
     @ManyToOne
     @JoinColumn(name = "produto_id")
     private Produto produto;
+
+    @ManyToOne
+    @JoinColumn(name = "venda_id")
+    private Venda venda;
 }
