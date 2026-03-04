@@ -56,7 +56,6 @@ public class UsuarioService {
 
         usuario.setNome(dto.nome());
         usuario.setRole(dto.role());
-        usuario.setAtivo(dto.ativo());
         usuario.setSenha(encoder.encode(dto.senha()));
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
