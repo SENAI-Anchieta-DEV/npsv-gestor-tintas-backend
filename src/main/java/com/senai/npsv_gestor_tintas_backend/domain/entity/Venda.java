@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.domain.entity;
 
+import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -20,6 +21,10 @@ public class Venda {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusVenda status;
 
     @NotBlank
     @Column(nullable = false)
