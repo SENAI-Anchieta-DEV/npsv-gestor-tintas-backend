@@ -27,57 +27,6 @@ public class VendaService {
     private final ProdutoRepository produtoRepository;
     private final UsuarioRepository usuarioRepository;
 
-    @Transactional
-    public VendaResponseDTO criarVenda(VendaRequestDTO dto) {
-        // 1. Validar Vendedor
-        Usuario vendedor = usuarioRepository.findById(dto.vendedorId())
-                .orElseThrow(() -> new EntityNotFoundException("Vendedor não encontrado."));
-
-        // 2. Preparar Cabeçalho da Venda
-        Venda venda = new Venda();
-        venda.setDataHora(LocalDateTime.now());
-        venda.setVendedor(vendedor);
-        venda.setItens(new ArrayList<>()); // Inicializa lista
-
-        BigDecimal totalCalculado = BigDecimal.ZERO;
-
-        // 3. Processar Itens
-        for (VendaRequestDTO.ItemVendaRequest itemDto : dto.itens()) {
-            Produto produto = produtoRepository.findById(itemDto.produtoId())
-                    .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado: " + itemDto.produtoId()));
-
-            // --- TASK NPSV-249: Validação de Saldo ---
-            if (produto.getQuantidadeEstoque().compareTo(itemDto.quantidade()) < 0) {
-                // Usando IllegalArgumentException (Erro genérico nativo do Java para argumentos inválidos)
-                throw new IllegalArgumentException(
-                        "Estoque insuficiente para '" + produto.getDescricao() + "'. Disponível: " + produto.getQuantidadeEstoque()
-                );
-            }
-
-            // Atualizar estoque (Baixa)
-            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().subtract(itemDto.quantidade()));
-            produtoRepository.save(produto);
-
-            // Criar Item
-            ItemVenda item = new ItemVenda();
-            item.setProduto(produto);
-            item.setQuantidade(itemDto.quantidade());
-            item.setPrecoPraticado(produto.getPrecoVenda());
-            item.setVenda(venda); // Vínculo essencial para o Cascade
-
-            venda.getItens().add(item);
-
-            // --- TASK NPSV-250: Cálculo Automático ---
-            totalCalculado = totalCalculado.add(item.getPrecoPraticado().multiply(item.getQuantidade()));
-        }
-
-        venda.setValorTotal(totalCalculado);
-
-        // --- TASK NPSV-251: Persistência em Cascata ---
-        Venda vendaSalva = vendaRepository.save(venda);
-
-        return VendaResponseDTO.fromEntity(vendaSalva);
-    }
 
     @Transactional
     public IniciarVendaResponseDTO iniciarVenda(IniciarVendaRequestDTO dto) {
