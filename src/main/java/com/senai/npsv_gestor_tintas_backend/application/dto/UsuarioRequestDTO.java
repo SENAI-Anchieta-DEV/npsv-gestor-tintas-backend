@@ -18,8 +18,7 @@ public record UsuarioRequestDTO(
         String senha,
 
         @NotNull(message = "A role (ADMIN, COLORISTA ou VENDEDOR) deve ser informada.")
-        Role role,
-        boolean ativo
+        Role role
 ) {
     public Usuario toEntity() {
         return Usuario.builder()
