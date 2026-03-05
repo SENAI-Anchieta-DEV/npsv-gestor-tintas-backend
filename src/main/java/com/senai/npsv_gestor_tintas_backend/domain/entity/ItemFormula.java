@@ -1,7 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.domain.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -19,7 +18,7 @@ public class ItemFormula {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private BigDecimal quantidadeNecessaria;
 
@@ -30,4 +29,8 @@ public class ItemFormula {
     @ManyToOne
     @JoinColumn(name = "insumo_id")
     private Produto insumo;
+
+    @ManyToOne
+    @JoinColumn(name = "formula_id", nullable = false)
+    private Formula formula;
 }

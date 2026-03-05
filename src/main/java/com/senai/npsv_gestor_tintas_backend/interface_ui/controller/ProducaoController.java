@@ -1,7 +1,9 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
+import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.ProducaoService;
-import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,48 +16,33 @@ import java.util.List;
 @RequestMapping("/api/producoes")
 @RequiredArgsConstructor
 public class ProducaoController {
-
     private final ProducaoService producaoService;
 
     @PostMapping
-    public ResponseEntity<Producao> criarProducao(@RequestBody Producao producao) {
-        Producao novaProducao = producaoService.iniciarProducao(producao);
-
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(novaProducao.getId())
-                .toUri();
-
-        return ResponseEntity.created(uri).body(novaProducao);
+    public ResponseEntity<ProducaoResponseDTO> iniciarOrdemDeProducao(@Valid @RequestBody ProducaoRequestDTO dto) {
+        ProducaoResponseDTO response = producaoService.iniciarOrdemDeProducao(dto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<Producao>> listarTodas() {
-        List<Producao> producoes = producaoService.buscarTodas();
-        return ResponseEntity.ok(producoes);
+    public ResponseEntity<List<ProducaoResponseDTO>> consultarOrdensDeProducaoAtivas() {
+        return ResponseEntity.ok(producaoService.consultarOrdensDeProducaoAtivas());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producao> buscarPorId(@PathVariable String id) {
-        Producao producao = producaoService.buscarPorId(id);
-        return ResponseEntity.ok(producao);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Producao> atualizarProducao(@PathVariable String id, @RequestBody Producao producao) {
-        Producao producaoAtualizada = producaoService.atualizar(id, producao);
-        return ResponseEntity.ok(producaoAtualizada);
+    public ResponseEntity<ProducaoResponseDTO> consultarDetalhesDaOrdem(@PathVariable String id) {
+        return ResponseEntity.ok(producaoService.consultarDetalhesDaOrdem(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarProducao(@PathVariable String id) {
-        producaoService.deletar(id);
+    public ResponseEntity<Void> cancelarOrdemDeProducao(@PathVariable String id) {
+        producaoService.cancelarOrdemDeProducao(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/concluir")
-    public ResponseEntity<Producao> concluirProducao(@PathVariable String id) {
-        Producao producaoConcluida = producaoService.concluirProducaoSimulada(id);
-        return ResponseEntity.ok(producaoConcluida);
+    public ResponseEntity<ProducaoResponseDTO> concluirProcessoDeProducao(@PathVariable String id) {
+        return ResponseEntity.ok(producaoService.concluirProcessoDeProducao(id));
     }
 }
