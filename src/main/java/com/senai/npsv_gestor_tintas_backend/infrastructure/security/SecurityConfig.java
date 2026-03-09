@@ -24,6 +24,9 @@ public class SecurityConfig {
         http.csrf(
                         AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+
+                        // 👇 ADICIONADO "/h2-console/**" NA LISTA DE PERMISSÕES 👇
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                         .requestMatchers("/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
@@ -31,6 +34,10 @@ public class SecurityConfig {
 
                         .anyRequest().authenticated()
                 )
+
+                // 👇 ADICIONADO PARA PERMITIR QUE O H2 RENDERIZE OS FRAMES NA TELA 👇
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(usuarioDetailsService);
 

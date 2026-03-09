@@ -29,29 +29,20 @@ public class VendaService {
 
 
     @Transactional
-    public IniciarVendaResponseDTO iniciarVenda(IniciarVendaRequestDTO dto) {
-        // 1. Validar se o vendedor existe
-        Usuario vendedor = usuarioRepository.findById(dto.vendedorId())
-                .orElseThrow(() -> new IllegalArgumentException("Vendedor não encontrado com o ID informado."));
+    public VendaResponseDTO iniciarVenda(IniciarVendaRequestDTO dto) {
+        Usuario vendedor = usuarioRepository.findByIdAndAtivoTrue(dto.vendedorId())
+                .orElseThrow(() -> new IllegalArgumentException("Vendedor não encontrado ou inativo."));
 
-        // 2. Criar a Venda inicial
-        Venda novaVenda = new Venda();
-        novaVenda.setDataHora(LocalDateTime.now());
-        novaVenda.setVendedor(vendedor);
-        novaVenda.setValorTotal(BigDecimal.ZERO); // Inicia zerada, pois ainda não tem itens
-        novaVenda.setStatus(StatusVenda.ABERTA); // Define o status inicial
+        Venda venda = Venda.builder()
+                .dataHora(LocalDateTime.now())
+                .vendedor(vendedor)
+                .valorTotal(BigDecimal.ZERO)
+                .status(StatusVenda.ABERTA)
+                .itens(new ArrayList<>())
+                .build();
 
-        // Se for usar cliente:
-        // Cliente cliente = clienteRepository.findById(dto.clienteId()).orElseThrow(...);
-        // novaVenda.setCliente(cliente);
-
-        // 3. Salvar no banco
-        Venda vendaSalva = vendaRepository.save(novaVenda);
-
-        // 4. Retornar DTO
-        return IniciarVendaResponseDTO.fromEntity(vendaSalva);
+        return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
-
     // Leitura (Read)
     public List<VendaResponseDTO> listarTodas() {
         return vendaRepository.findAll().stream()
@@ -72,49 +63,51 @@ public class VendaService {
     }
     @Transactional
     public VendaResponseDTO concluirVenda(String vendaId, ConcluirVendaRequestDTO dto) {
-        // 1. Verificar se a venda existe
         Venda venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() -> new IllegalArgumentException("Venda não encontrada com o ID informado."));
 
-        // 2. Validar Status (Não pode concluir venda já fechada ou cancelada)
-        if (venda.getStatus() == StatusVenda.CONCLUIDA || venda.getStatus() == StatusVenda.CANCELADA) {
-            throw new IllegalStateException("A venda não pode ser concluída pois está no status: " + venda.getStatus());
+        if (venda.getStatus() != StatusVenda.ABERTA) {
+            throw new IllegalArgumentException("Apenas vendas abertas podem ser concluídas.");
         }
 
-        // 3. Validação de Peso (Mock/Exemplo da sua regra de negócio)
-        // Se a venda possuir tinta manipulada que precisa passar pela balança:
-        /*
-        boolean pesoValidado = pesagemService.validarPesoDaVenda(venda.getId());
-        if (!pesoValidado) {
-            throw new IllegalArgumentException("O peso lido na balança não condiz com a fórmula solicitada.");
-        }
-        */
+        BigDecimal valorTotal = BigDecimal.ZERO;
 
-        // 4. Baixa de Estoque Iterativa e Atômica
-        for (ItemVenda item : venda.getItens()) {
+        // Iteração de Itens
+        for (VendaItemRequestDTO itemDto : dto.itens()) {
+            Produto produto = produtoRepository.findById(itemDto.produtoId())
+                    .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado: " + itemDto.produtoId()));
 
-            // Tenta dar baixa e guarda o resultado (true ou false)
-            boolean baixaComSucesso = produtoRepository.darBaixaEstoque(item.getProduto().getId(), item.getQuantidade());
-
-            // Se falhou (false), lança a exceção e o @Transactional faz o Rollback
-            if (!baixaComSucesso) {
-                throw new IllegalArgumentException(
-                        "Estoque insuficiente no momento da conclusão para o produto: " + item.getProduto().getDescricao()
-                );
+            // Validação de Stock (com exceção genérica)
+            if (produto.getQuantidadeEstoque().compareTo(itemDto.quantidade()) < 0) {
+                throw new IllegalArgumentException(String.format(
+                        "Estoque insuficiente para o produto '%s'. Solicitado: %s, Disponível: %s",
+                        produto.getDescricao(), itemDto.quantidade(), produto.getQuantidadeEstoque()));
             }
+
+            // Atualização de Stock
+            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().subtract(itemDto.quantidade()));
+            produtoRepository.save(produto);
+
+            // Registo do ItemVenda
+            ItemVenda novoItem = ItemVenda.builder()
+                    .venda(venda)
+                    .produto(produto)
+                    .quantidade(itemDto.quantidade())
+                    .precoPraticado(produto.getPrecoVenda())
+                    .build();
+
+            venda.getItens().add(novoItem);
+
+            // Cálculo Financeiro
+            valorTotal = valorTotal.add(produto.getPrecoVenda().multiply(itemDto.quantidade()));
         }
 
-        // 5. Fechamento da Venda
+        // Finalização da Venda
+        venda.setValorTotal(valorTotal);
+        venda.setFormaPagamento(dto.formaPagamento());
+        venda.setDataHora(LocalDateTime.now());
         venda.setStatus(StatusVenda.CONCLUIDA);
 
-        // NOTA: Certifique-se de que os atributos abaixo existem na sua entidade Venda!
-        // venda.setDataFechamento(LocalDateTime.now());
-        // venda.setFormaPagamento(dto.formaPagamento());
-        // venda.setValorRecebido(dto.valorRecebido());
-
-        // 6. Persistir as alterações
-        Venda vendaConcluida = vendaRepository.save(venda);
-
-        return VendaResponseDTO.fromEntity(vendaConcluida);
+        return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
 }
