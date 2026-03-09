@@ -19,26 +19,28 @@ public class CategoriaProdutoController {
     private final CategoriaProdutoService service;
 
     @PostMapping
-    public ResponseEntity<CategoriaProdutoResponseDTO> definirNovaCategoria(@Valid @RequestBody CategoriaProdutoRequestDTO dto) {
-        CategoriaProdutoResponseDTO response = service.definirNovaCategoria(dto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
+    public ResponseEntity<CategoriaProdutoResponseDTO> registrarCategoriaProduto(@Valid @RequestBody CategoriaProdutoRequestDTO dto) {
+        CategoriaProdutoResponseDTO response = service.registrarCategoriaProduto(dto);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest().path("/{id}")
+                .buildAndExpand(response.id()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoriaProdutoResponseDTO>> listarCategoriasDisponiveis() { return ResponseEntity.ok(service.listarCategoriasDisponiveis()); }
+    public ResponseEntity<List<CategoriaProdutoResponseDTO>> listarCategoriasProdutos() { return ResponseEntity.ok(service.listarCategoriasProdutos()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaProdutoResponseDTO> obterDetalhesDaCategoria(@PathVariable String id) { return ResponseEntity.ok(service.obterDetalhesDaCategoria(id)); }
+    public ResponseEntity<CategoriaProdutoResponseDTO> buscarCategoriaProdutoPorId(@PathVariable String id) { return ResponseEntity.ok(service.buscarCategoriaProdutoPorId(id)); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaProdutoResponseDTO> atualizarDadosDaCategoria(@PathVariable String id, @Valid @RequestBody CategoriaProdutoRequestDTO dto) {
-        return ResponseEntity.ok(service.atualizarDadosDaCategoria(id, dto));
+    public ResponseEntity<CategoriaProdutoResponseDTO> atualizarCategoriaProduto(@PathVariable String id, @Valid @RequestBody CategoriaProdutoRequestDTO dto) {
+        return ResponseEntity.ok(service.atualizarCategoriaProduto(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removerCategoriaDoCatalogo(@PathVariable String id) {
-        service.removerCategoriaDoCatalogo(id);
+    public ResponseEntity<Void> deletarCategoriaProduto(@PathVariable String id) {
+        service.deletarCategoriaProduto(id);
         return ResponseEntity.noContent().build();
     }
 }

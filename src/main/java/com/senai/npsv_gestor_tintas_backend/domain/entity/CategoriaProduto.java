@@ -13,7 +13,7 @@ import lombok.*;
 @Table(name = "categoria_produto")
 public class CategoriaProduto {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @NotBlank

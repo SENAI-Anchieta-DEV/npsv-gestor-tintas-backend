@@ -19,26 +19,26 @@ public class ProdutoController {
     private final ProdutoService service;
 
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> registrarNovoProdutoNoCatalogo(@Valid @RequestBody ProdutoRequestDTO dto) {
-        ProdutoResponseDTO response = service.registrarNovoProdutoNoCatalogo(dto);
+    public ResponseEntity<ProdutoResponseDTO> registrarProduto(@Valid @RequestBody ProdutoRequestDTO dto) {
+        ProdutoResponseDTO response = service.registrarProduto(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoResponseDTO>> consultarCatalogoDeEstoque() { return ResponseEntity.ok(service.consultarCatalogoDeEstoque()); }
+    public ResponseEntity<List<ProdutoResponseDTO>> listarProdutos() { return ResponseEntity.ok(service.listarProdutos()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDTO> consultarFichaTecnicaDoProduto(@PathVariable String id) { return ResponseEntity.ok(service.consultarFichaTecnicaDoProduto(id)); }
+    public ResponseEntity<ProdutoResponseDTO> listarProdutoPorId(@PathVariable String id) { return ResponseEntity.ok(service.listarProdutoPorId(id)); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponseDTO> atualizarFichaTecnicaDoProduto(@PathVariable String id, @Valid @RequestBody ProdutoRequestDTO dto) {
-        return ResponseEntity.ok(service.atualizarFichaTecnicaDoProduto(id, dto));
+    public ResponseEntity<ProdutoResponseDTO> atualizarProduto(@PathVariable String id, @Valid @RequestBody ProdutoRequestDTO dto) {
+        return ResponseEntity.ok(service.atualizarProduto(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removerProdutoDoCatalogo(@PathVariable String id) {
-        service.removerProdutoDoCatalogo(id);
+    public ResponseEntity<Void> deletarProduto(@PathVariable String id) {
+        service.deletarProduto(id);
         return ResponseEntity.noContent().build();
     }
 }
