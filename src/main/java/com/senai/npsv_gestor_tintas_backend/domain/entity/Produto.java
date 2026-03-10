@@ -3,6 +3,7 @@ package com.senai.npsv_gestor_tintas_backend.domain.entity;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.UnidadeMedida;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -27,15 +28,15 @@ public class Produto {
     @Column(nullable = false)
     private String descricao;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private BigDecimal quantidadeEstoque;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private BigDecimal precoCusto;
 
-    @NotBlank
+    @NotNull
     @Column(nullable = false)
     private BigDecimal precoVenda;
 
