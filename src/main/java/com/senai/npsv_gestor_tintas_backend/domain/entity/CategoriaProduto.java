@@ -12,6 +12,7 @@ import lombok.*;
 @Builder
 @Table(name = "categoria_produto")
 public class CategoriaProduto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
@@ -22,5 +23,5 @@ public class CategoriaProduto {
 
     @NotBlank
     @Column(nullable = false)
-    String descricao;
+    private String descricao;
 }
