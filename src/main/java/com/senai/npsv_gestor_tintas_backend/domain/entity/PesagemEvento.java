@@ -1,8 +1,10 @@
 package com.senai.npsv_gestor_tintas_backend.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -14,11 +16,13 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "pesagem_evento")
 public class PesagemEvento {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @NotNull
+    @DecimalMin(value = "0.0", inclusive = true)
     @Column(nullable = false)
     private BigDecimal pesoLido;
 
@@ -26,6 +30,7 @@ public class PesagemEvento {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
+    @Column(nullable = false)
     private boolean foiAprovado;
 
     @ManyToOne
