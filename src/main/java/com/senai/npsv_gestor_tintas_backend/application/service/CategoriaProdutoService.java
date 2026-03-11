@@ -25,14 +25,14 @@ public class CategoriaProdutoService {
         return repository.findAll().stream().map(CategoriaProdutoResponseDTO::fromEntity).toList();
     }
 
-    public CategoriaProdutoResponseDTO buscarCategoriaProdutoPorId(String id) {
-        CategoriaProduto categoria = repository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada no catálogo."));
+    public CategoriaProdutoResponseDTO listarCategoriaProdutoPorId(String id) {
+        CategoriaProduto categoria = buscarCategoriaProdutoPorId(id);
         return CategoriaProdutoResponseDTO.fromEntity(categoria);
     }
 
     @Transactional
     public CategoriaProdutoResponseDTO atualizarCategoriaProduto(String id, CategoriaProdutoRequestDTO dto) {
-        CategoriaProduto existente = repository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
+        CategoriaProduto existente = buscarCategoriaProdutoPorId(id);
         existente.setNome(dto.nome());
         existente.setDescricao(dto.descricao());
         return CategoriaProdutoResponseDTO.fromEntity(repository.save(existente));
@@ -40,6 +40,10 @@ public class CategoriaProdutoService {
 
     @Transactional
     public void deletarCategoriaProduto(String id) {
-        repository.delete(repository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada.")));
+        repository.delete(buscarCategoriaProdutoPorId(id));
+    }
+
+    private CategoriaProduto buscarCategoriaProdutoPorId(String id) {
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("Categoria de produto não encontrada."));
     }
 }

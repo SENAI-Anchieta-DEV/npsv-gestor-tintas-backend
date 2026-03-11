@@ -21,8 +21,7 @@ public class ProdutoService {
     @Transactional
     public ProdutoResponseDTO registrarProduto(ProdutoRequestDTO dto) {
         Produto produto = dto.toEntity();
-        produto.setCategoria(categoriaRepository.findById(dto.categoriaId())
-                .orElseThrow(() -> new RuntimeException("Categoria informada não existe.")));
+        produto.setCategoria(buscarCategoriaProdutoPorId(dto.categoriaId()));
         return ProdutoResponseDTO.fromEntity(produtoRepository.save(produto));
     }
 
@@ -31,7 +30,7 @@ public class ProdutoService {
     }
 
     public ProdutoResponseDTO listarProdutoPorId(String id) {
-        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new RuntimeException("Produto não encontrado no estoque."));
+        Produto produto = buscarProdutoPorId(id);
         return ProdutoResponseDTO.fromEntity(produto);
     }
 

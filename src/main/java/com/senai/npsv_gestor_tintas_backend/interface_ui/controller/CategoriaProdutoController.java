@@ -31,7 +31,7 @@ public class CategoriaProdutoController {
     public ResponseEntity<List<CategoriaProdutoResponseDTO>> listarCategoriasProdutos() { return ResponseEntity.ok(service.listarCategoriasProdutos()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaProdutoResponseDTO> buscarCategoriaProdutoPorId(@PathVariable String id) { return ResponseEntity.ok(service.buscarCategoriaProdutoPorId(id)); }
+    public ResponseEntity<CategoriaProdutoResponseDTO> buscarCategoriaProdutoPorId(@PathVariable String id) { return ResponseEntity.ok(service.listarCategoriaProdutoPorId(id)); }
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoriaProdutoResponseDTO> atualizarCategoriaProduto(@PathVariable String id, @Valid @RequestBody CategoriaProdutoRequestDTO dto) {

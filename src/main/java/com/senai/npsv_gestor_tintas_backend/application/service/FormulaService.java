@@ -28,20 +28,24 @@ public class FormulaService {
     }
 
     public FormulaResponseDTO consultarEspecificacoesDaFormula(String id) {
-        Formula formula = repository.findById(id).orElseThrow(() -> new RuntimeException("Fórmula técnica não encontrada."));
+        Formula formula = buscarFormulaPorId(id);
         return FormulaResponseDTO.fromEntity(formula);
     }
 
     @Transactional
     public FormulaResponseDTO alterarEspecificacoesDaFormula(String id, FormulaRequestDTO dto) {
-        Formula existente = repository.findById(id).orElseThrow(RuntimeException::new);
-        existente.setCodigoInterno(dto.codigoInterno());
-        existente.setNomeCor(dto.nomeCor());
-        return FormulaResponseDTO.fromEntity(repository.save(existente));
+        Formula formula = buscarFormulaPorId(id);
+        formula.setCodigoInterno(dto.codigoInterno());
+        formula.setNomeCor(dto.nomeCor());
+        return FormulaResponseDTO.fromEntity(repository.save(formula));
     }
 
     @Transactional
     public void inativarReceitaDeFormula(String id) {
-        repository.delete(repository.findById(id).orElseThrow(RuntimeException::new));
+        repository.delete(buscarFormulaPorId(id));
+    }
+
+    private Formula buscarFormulaPorId(String id) {
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("Fórmula técnica não encontrada."));
     }
 }

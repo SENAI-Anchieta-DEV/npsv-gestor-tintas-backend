@@ -51,20 +51,20 @@ public class ProducaoService {
     }
 
     public ProducaoResponseDTO consultarDetalhesDaOrdem(String id) {
-        Producao producao = producaoRepository.findById(id).orElseThrow(() -> new RuntimeException("Ordem de produção não encontrada."));
+        Producao producao = buscarProducaoPorId(id);
         return ProducaoResponseDTO.fromEntity(producao);
     }
 
     @Transactional
     public void cancelarOrdemDeProducao(String id) {
-        Producao producao = producaoRepository.findById(id).orElseThrow(() -> new RuntimeException("Ordem de produção não encontrada."));
+        Producao producao = buscarProducaoPorId(id);
         producao.setStatus(StatusProducao.CANCELADO);
         producaoRepository.save(producao);
     }
 
     @Transactional
-    public ProducaoResponseDTO concluirProcessoDeProducao(String producaoId) {
-        Producao producao = producaoRepository.findById(producaoId).orElseThrow(() -> new RuntimeException("Ordem de produção não encontrada."));
+    public ProducaoResponseDTO concluirProcessoDeProducao(String id) {
+        Producao producao = buscarProducaoPorId(id);
 
         if (producao.getStatus() == StatusProducao.CONCLUIDO) {
             throw new RuntimeException("Esta ordem de produção já foi finalizada anteriormente.");
@@ -95,5 +95,9 @@ public class ProducaoService {
             produtoRepository.save(insumo);
         }
         log.info("--- FIM DA BAIXA DE ESTOQUE ---");
+    }
+
+    private Producao buscarProducaoPorId(String id) {
+        return producaoRepository.findById(id).orElseThrow(() -> new RuntimeException("Ordem de produção não encontrada."));
     }
 }
