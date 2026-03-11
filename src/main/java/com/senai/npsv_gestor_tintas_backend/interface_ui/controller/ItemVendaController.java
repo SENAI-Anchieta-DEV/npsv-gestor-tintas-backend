@@ -14,7 +14,6 @@ public class ItemVendaController {
 
     private final ItemVendaService service;
 
-    // 1. Listar todos os itens vendidos (Geral)
     @GetMapping
     public ResponseEntity<List<ItemVendaResponseDTO>> listarTodos() {
         List<ItemVendaResponseDTO> lista = service.listarTodos().stream()
@@ -23,14 +22,12 @@ public class ItemVendaController {
         return ResponseEntity.ok(lista);
     }
 
-    // 2. Buscar um item específico por ID
     @GetMapping("/{id}")
     public ResponseEntity<ItemVendaResponseDTO> buscarPorId(@PathVariable String id) {
         var item = service.buscarPorId(id);
         return ResponseEntity.ok(ItemVendaResponseDTO.fromEntity(item));
     }
 
-    // 3. Listar itens de uma Venda específica (Ex: /api/itens-venda/venda/ID-DA-VENDA)
     @GetMapping("/venda/{vendaId}")
     public ResponseEntity<List<ItemVendaResponseDTO>> listarPorVenda(@PathVariable String vendaId) {
         List<ItemVendaResponseDTO> lista = service.listarPorVenda(vendaId).stream()

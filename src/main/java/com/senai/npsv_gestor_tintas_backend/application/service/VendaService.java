@@ -43,7 +43,7 @@ public class VendaService {
 
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
-    // Leitura (Read)
+
     public List<VendaResponseDTO> listarTodas() {
         return vendaRepository.findAll().stream()
                 .map(VendaResponseDTO::fromEntity)
@@ -72,23 +72,19 @@ public class VendaService {
 
         BigDecimal valorTotal = BigDecimal.ZERO;
 
-        // Iteração de Itens
         for (VendaItemRequestDTO itemDto : dto.itens()) {
             Produto produto = produtoRepository.findById(itemDto.produtoId())
                     .orElseThrow(() -> new IllegalArgumentException("Produto não encontrado: " + itemDto.produtoId()));
 
-            // Validação de Stock (com exceção genérica)
             if (produto.getQuantidadeEstoque().compareTo(itemDto.quantidade()) < 0) {
                 throw new IllegalArgumentException(String.format(
                         "Estoque insuficiente para o produto '%s'. Solicitado: %s, Disponível: %s",
                         produto.getDescricao(), itemDto.quantidade(), produto.getQuantidadeEstoque()));
             }
 
-            // Atualização de Stock
             produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().subtract(itemDto.quantidade()));
             produtoRepository.save(produto);
 
-            // Registo do ItemVenda
             ItemVenda novoItem = ItemVenda.builder()
                     .venda(venda)
                     .produto(produto)
@@ -98,14 +94,12 @@ public class VendaService {
 
             venda.getItens().add(novoItem);
 
-            // Cálculo Financeiro
             valorTotal = valorTotal.add(produto.getPrecoVenda().multiply(itemDto.quantidade()));
         }
 
-        // Finalização da Venda
         venda.setValorTotal(valorTotal);
         venda.setFormaPagamento(dto.formaPagamento());
-        venda.setDataHora(LocalDateTime.now());
+        venda.setDataFechamento(LocalDateTime.now());
         venda.setStatus(StatusVenda.CONCLUIDA);
 
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));

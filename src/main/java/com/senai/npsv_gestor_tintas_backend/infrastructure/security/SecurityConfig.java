@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,8 +26,6 @@ public class SecurityConfig {
                         AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
 
-                        // 👇 ADICIONADO "/h2-console/**" NA LISTA DE PERMISSÕES 👇
-                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**").permitAll()
                         .requestMatchers("/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
@@ -35,8 +34,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
 
-                // 👇 ADICIONADO PARA PERMITIR QUE O H2 RENDERIZE OS FRAMES NA TELA 👇
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(usuarioDetailsService);
