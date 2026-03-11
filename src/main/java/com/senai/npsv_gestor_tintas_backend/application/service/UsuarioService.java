@@ -3,6 +3,8 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
+import com.senai.npsv_gestor_tintas_backend.domain.exceptions.EntidadeDuplicadaException;
+import com.senai.npsv_gestor_tintas_backend.domain.exceptions.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,11 +23,10 @@ public class UsuarioService {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO dto) {
         if (repository.findByEmailAndAtivoTrue(dto.email()).isPresent()) {
-            throw new IllegalArgumentException("Este e-mail já está em uso.");
+            throw new EntidadeDuplicadaException("Este e-mail já está em uso.");
         }
 
         Usuario novoUsuario = dto.toEntity();
-
         novoUsuario.setSenha(encoder.encode(dto.senha()));
 
         return new UsuarioResponseDTO(repository.save(novoUsuario));
@@ -76,11 +77,11 @@ public class UsuarioService {
 
     private Usuario buscarUsuarioAtivoPorEmail(String email) {
         return repository.findByEmailAndAtivoTrue(email)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado ou inativo"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário não encontrado ou inativo"));
     }
 
     private Usuario BuscarUsuarioAtivoPorId(String id) {
         return repository.findByIdAndAtivoTrue(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado ou inativo"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário não encontrado ou inativo"));
     }
 }

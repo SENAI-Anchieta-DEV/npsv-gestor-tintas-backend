@@ -26,7 +26,7 @@ public class SecurityConfig {
                         AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
+                        .requestMatchers("/auth/**","/swagger-ui/**","/v3/api-docs/**", "/error").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/usuarios").hasAnyRole("ADMIN")

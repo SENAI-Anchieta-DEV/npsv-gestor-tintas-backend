@@ -2,6 +2,8 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 
 import com.senai.npsv_gestor_tintas_backend.application.dto.AuthDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
+import com.senai.npsv_gestor_tintas_backend.domain.exceptions.CredenciaisInvalidasException;
+import com.senai.npsv_gestor_tintas_backend.domain.exceptions.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import com.senai.npsv_gestor_tintas_backend.infrastructure.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,10 @@ public class AuthService {
     public String login(AuthDTO.LoginRequest req) {
         System.out.println("Autenticando usuário: " + req.email());
         Usuario usuario = usuarios.findByEmail(req.email())
-                .orElseThrow(() ->  new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Utilizador não encontrado com este e-mail."));
 
         if (!encoder.matches(req.senha(), usuario.getSenha())) {
-            throw new BadCredentialsException("Credenciais inválidas");
+            throw new CredenciaisInvalidasException("Palavra-passe inválida.");
         }
 
         return jwt.generateToken(usuario.getEmail(), usuario.getRole().name());

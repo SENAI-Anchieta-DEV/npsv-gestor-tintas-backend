@@ -4,6 +4,7 @@ import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.CategoriaProduto;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
+import com.senai.npsv_gestor_tintas_backend.domain.exceptions.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.CategoriaProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class ProdutoService {
     public ProdutoResponseDTO registrarProduto(ProdutoRequestDTO dto) {
         Produto produto = dto.toEntity();
         produto.setCategoria(categoriaRepository.findById(dto.categoriaId())
-                .orElseThrow(() -> new RuntimeException("Categoria informada não existe.")));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Categoria informada não existe.")));
         return ProdutoResponseDTO.fromEntity(produtoRepository.save(produto));
     }
 
@@ -31,7 +32,8 @@ public class ProdutoService {
     }
 
     public ProdutoResponseDTO listarProdutoPorId(String id) {
-        Produto produto = produtoRepository.findById(id).orElseThrow(() -> new RuntimeException("Produto não encontrado no estoque."));
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado no estoque."));
         return ProdutoResponseDTO.fromEntity(produto);
     }
 
@@ -55,10 +57,12 @@ public class ProdutoService {
     }
 
     private Produto buscarProdutoPorId(String id) {
-        return produtoRepository.findById(id).orElseThrow(() -> new RuntimeException("Produto não encontrado."));
+        return produtoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado."));
     }
 
     private CategoriaProduto buscarCategoriaProdutoPorId(String id) {
-        return categoriaRepository.findById(id).orElseThrow(() -> new RuntimeException("Categoria de produto não encontrada."));
+        return categoriaRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Categoria de produto não encontrada."));
     }
 }
