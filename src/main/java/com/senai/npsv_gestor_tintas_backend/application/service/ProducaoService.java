@@ -13,6 +13,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class ProducaoService {
     private final FormulaRepository formulaRepository;
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public ProducaoResponseDTO iniciarOrdemDeProducao(ProducaoRequestDTO dto) {
         Producao producao = dto.toEntity();
         producao.setColorista(usuarioRepository.findByIdAndAtivoTrue(dto.coloristaId())
@@ -44,18 +46,21 @@ public class ProducaoService {
         return ProducaoResponseDTO.fromEntity(producaoRepository.save(producao));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<ProducaoResponseDTO> consultarOrdensDeProducaoAtivas() {
         return producaoRepository.findAll().stream()
                 .filter(p -> p.getStatus() != StatusProducao.CANCELADO)
                 .map(ProducaoResponseDTO::fromEntity).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public ProducaoResponseDTO consultarDetalhesDaOrdem(String id) {
         Producao producao = buscarProducaoPorId(id);
         return ProducaoResponseDTO.fromEntity(producao);
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public void cancelarOrdemDeProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
         producao.setStatus(StatusProducao.CANCELADO);
@@ -63,6 +68,7 @@ public class ProducaoService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public ProducaoResponseDTO concluirProcessoDeProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
 
