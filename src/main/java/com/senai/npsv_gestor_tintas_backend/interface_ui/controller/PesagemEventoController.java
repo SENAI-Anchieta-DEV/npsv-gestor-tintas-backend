@@ -16,6 +16,6 @@ public class PesagemEventoController {
 
     @PostMapping
     public ResponseEntity<PesagemEventoResponseDTO> registrarPesagemEvento(@Valid @RequestBody PesagemEventoRequestDTO dto) {
-        return ResponseEntity.ok(service.registrarLeituraDoSensorIot(dto));
+        return ResponseEntity.ok(service.registrarPesagemEvento(dto));
     }
 }

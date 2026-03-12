@@ -31,7 +31,7 @@ public class ProducaoService {
     private final FormulaRepository formulaRepository;
 
     @Transactional
-    public ProducaoResponseDTO iniciarOrdemDeProducao(ProducaoRequestDTO dto) {
+    public ProducaoResponseDTO iniciarProducao(ProducaoRequestDTO dto) {
         Producao producao = dto.toEntity();
         producao.setColorista(usuarioRepository.findByIdAndAtivoTrue(dto.coloristaId())
                 .orElseThrow(() -> new RuntimeException("Colorista não encontrado ou inativo.")));
@@ -44,26 +44,26 @@ public class ProducaoService {
         return ProducaoResponseDTO.fromEntity(producaoRepository.save(producao));
     }
 
-    public List<ProducaoResponseDTO> consultarOrdensDeProducaoAtivas() {
+    public List<ProducaoResponseDTO> listarProducoesAtivas() {
         return producaoRepository.findAll().stream()
                 .filter(p -> p.getStatus() != StatusProducao.CANCELADO)
                 .map(ProducaoResponseDTO::fromEntity).toList();
     }
 
-    public ProducaoResponseDTO consultarDetalhesDaOrdem(String id) {
+    public ProducaoResponseDTO listarProducaoPorId(String id) {
         Producao producao = buscarProducaoPorId(id);
         return ProducaoResponseDTO.fromEntity(producao);
     }
 
     @Transactional
-    public void cancelarOrdemDeProducao(String id) {
+    public void cancelarProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
         producao.setStatus(StatusProducao.CANCELADO);
         producaoRepository.save(producao);
     }
 
     @Transactional
-    public ProducaoResponseDTO concluirProcessoDeProducao(String id) {
+    public ProducaoResponseDTO concluirProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
 
         if (producao.getStatus() == StatusProducao.CONCLUIDO) {
@@ -73,12 +73,12 @@ public class ProducaoService {
         producao.setStatus(StatusProducao.CONCLUIDO);
         Producao producaoSalva = producaoRepository.save(producao);
 
-        deduzirInsumosDoEstoqueGlobal(producaoSalva);
+        darBaixaEstoqueProducao(producaoSalva);
 
         return ProducaoResponseDTO.fromEntity(producaoSalva);
     }
 
-    private void deduzirInsumosDoEstoqueGlobal(Producao producao) {
+    private void darBaixaEstoqueProducao(Producao producao) {
         log.info("--- INÍCIO DA BAIXA DE ESTOQUE (PRODUÇÃO {}) ---", producao.getId());
         List<ItemFormula> insumosNecessarios = itemFormulaRepository.findByFormulaId(producao.getFormula().getId());
 

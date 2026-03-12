@@ -20,29 +20,29 @@ public class ProducaoController {
 
     @PostMapping
     public ResponseEntity<ProducaoResponseDTO> iniciarProducao(@Valid @RequestBody ProducaoRequestDTO dto) {
-        ProducaoResponseDTO response = producaoService.iniciarOrdemDeProducao(dto);
+        ProducaoResponseDTO response = producaoService.iniciarProducao(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping
     public ResponseEntity<List<ProducaoResponseDTO>> listarProducoesAtivas() {
-        return ResponseEntity.ok(producaoService.consultarOrdensDeProducaoAtivas());
+        return ResponseEntity.ok(producaoService.listarProducoesAtivas());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProducaoResponseDTO> listarProducaoPorId(@PathVariable String id) {
-        return ResponseEntity.ok(producaoService.consultarDetalhesDaOrdem(id));
+        return ResponseEntity.ok(producaoService.listarProducaoPorId(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelarProducao(@PathVariable String id) {
-        producaoService.cancelarOrdemDeProducao(id);
+        producaoService.cancelarProducao(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/concluir")
     public ResponseEntity<ProducaoResponseDTO> concluirProducao(@PathVariable String id) {
-        return ResponseEntity.ok(producaoService.concluirProcessoDeProducao(id));
+        return ResponseEntity.ok(producaoService.concluirProducao(id));
     }
 }

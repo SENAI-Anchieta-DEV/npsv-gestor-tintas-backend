@@ -22,7 +22,7 @@ public class ItemFormulaService {
     private final ProdutoRepository produtoRepository;
 
     @Transactional
-    public ItemFormulaResponseDTO adicionarInsumoNaReceitaDaFormula(ItemFormulaRequestDTO dto) {
+    public ItemFormulaResponseDTO registrarItemFormula(ItemFormulaRequestDTO dto) {
         ItemFormula item = dto.toEntity();
 
         item.setFormula(
@@ -40,7 +40,7 @@ public class ItemFormulaService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemFormulaResponseDTO> consultarInsumosDaReceita(String formulaId) {
+    public List<ItemFormulaResponseDTO> listarItemFormulaPorId(String formulaId) {
         return itemRepository.findByFormulaId(formulaId)
                 .stream()
                 .map(ItemFormulaResponseDTO::fromEntity)
@@ -48,7 +48,7 @@ public class ItemFormulaService {
     }
 
     @Transactional
-    public void removerInsumoDaReceita(String id) {
+    public void deletarItemFormula(String id) {
         if (!itemRepository.existsById(id)) {
             throw new EntityNotFoundException("Item da fórmula não encontrado.");
         }
