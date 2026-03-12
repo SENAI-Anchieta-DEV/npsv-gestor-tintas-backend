@@ -19,25 +19,25 @@ public class FormulaController {
     private final FormulaService service;
 
     @PostMapping
-    public ResponseEntity<FormulaResponseDTO> criarNovaReceitaDeFormula(@Valid @RequestBody FormulaRequestDTO dto) {
+    public ResponseEntity<FormulaResponseDTO> registrarFormula(@Valid @RequestBody FormulaRequestDTO dto) {
         FormulaResponseDTO response = service.criarNovaReceitaDeFormula(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<FormulaResponseDTO>> listarReceitasDeFormulas() { return ResponseEntity.ok(service.listarReceitasDeFormulas()); }
+    public ResponseEntity<List<FormulaResponseDTO>> listarFormulas() { return ResponseEntity.ok(service.listarReceitasDeFormulas()); }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FormulaResponseDTO> consultarEspecificacoesDaFormula(@PathVariable String id) { return ResponseEntity.ok(service.consultarEspecificacoesDaFormula(id)); }
+    public ResponseEntity<FormulaResponseDTO> listarFormulaPorId(@PathVariable String id) { return ResponseEntity.ok(service.consultarEspecificacoesDaFormula(id)); }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FormulaResponseDTO> alterarEspecificacoesDaFormula(@PathVariable String id, @Valid @RequestBody FormulaRequestDTO dto) {
+    public ResponseEntity<FormulaResponseDTO> atualizarFormula(@PathVariable String id, @Valid @RequestBody FormulaRequestDTO dto) {
         return ResponseEntity.ok(service.alterarEspecificacoesDaFormula(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> inativarReceitaDeFormula(@PathVariable String id) {
+    public ResponseEntity<Void> deletarFormula(@PathVariable String id) {
         service.inativarReceitaDeFormula(id);
         return ResponseEntity.noContent().build();
     }

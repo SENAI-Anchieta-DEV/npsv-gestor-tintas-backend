@@ -17,17 +17,17 @@ public class ItemFormulaController {
     private final ItemFormulaService service;
 
     @PostMapping
-    public ResponseEntity<ItemFormulaResponseDTO> adicionarInsumoNaReceitaDaFormula(@Valid @RequestBody ItemFormulaRequestDTO dto) {
+    public ResponseEntity<ItemFormulaResponseDTO> registrarItemFormula(@Valid @RequestBody ItemFormulaRequestDTO dto) {
         return ResponseEntity.ok(service.adicionarInsumoNaReceitaDaFormula(dto));
     }
 
     @GetMapping("/formula/{formulaId}")
-    public ResponseEntity<List<ItemFormulaResponseDTO>> consultarInsumosDaReceita(@PathVariable String formulaId) {
+    public ResponseEntity<List<ItemFormulaResponseDTO>> listarItemFormulaPorId(@PathVariable String formulaId) {
         return ResponseEntity.ok(service.consultarInsumosDaReceita(formulaId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> removerInsumoDaReceita(@PathVariable String id) {
+    public ResponseEntity<Void> deletarItemFormula(@PathVariable String id) {
         service.removerInsumoDaReceita(id);
         return ResponseEntity.noContent().build();
     }

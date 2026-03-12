@@ -15,7 +15,7 @@ public class ItemVendaController {
     private final ItemVendaService service;
 
     @GetMapping
-    public ResponseEntity<List<ItemVendaResponseDTO>> listarTodos() {
+    public ResponseEntity<List<ItemVendaResponseDTO>> listarItensVenda() {
         List<ItemVendaResponseDTO> lista = service.listarTodos().stream()
                 .map(ItemVendaResponseDTO::fromEntity)
                 .toList();
@@ -23,13 +23,13 @@ public class ItemVendaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemVendaResponseDTO> buscarPorId(@PathVariable String id) {
+    public ResponseEntity<ItemVendaResponseDTO> listarItemVendaPorId(@PathVariable String id) {
         var item = service.buscarPorId(id);
         return ResponseEntity.ok(ItemVendaResponseDTO.fromEntity(item));
     }
 
     @GetMapping("/venda/{vendaId}")
-    public ResponseEntity<List<ItemVendaResponseDTO>> listarPorVenda(@PathVariable String vendaId) {
+    public ResponseEntity<List<ItemVendaResponseDTO>> listarItemVendaPorVenda(@PathVariable String vendaId) {
         List<ItemVendaResponseDTO> lista = service.listarPorVenda(vendaId).stream()
                 .map(ItemVendaResponseDTO::fromEntity)
                 .toList();
