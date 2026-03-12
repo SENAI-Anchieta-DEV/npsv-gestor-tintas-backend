@@ -5,6 +5,7 @@ import com.senai.npsv_gestor_tintas_backend.application.dto.CategoriaProdutoResp
 import com.senai.npsv_gestor_tintas_backend.domain.entity.CategoriaProduto;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.CategoriaProdutoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,21 +17,25 @@ public class CategoriaProdutoService {
     private final CategoriaProdutoRepository repository;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoriaProdutoResponseDTO registrarCategoriaProduto(CategoriaProdutoRequestDTO dto) {
         CategoriaProduto categoria = repository.save(dto.toEntity());
         return CategoriaProdutoResponseDTO.fromEntity(categoria);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<CategoriaProdutoResponseDTO> listarCategoriasProdutos() {
         return repository.findAll().stream().map(CategoriaProdutoResponseDTO::fromEntity).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public CategoriaProdutoResponseDTO listarCategoriaProdutoPorId(String id) {
         CategoriaProduto categoria = buscarCategoriaProdutoPorId(id);
         return CategoriaProdutoResponseDTO.fromEntity(categoria);
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoriaProdutoResponseDTO atualizarCategoriaProduto(String id, CategoriaProdutoRequestDTO dto) {
         CategoriaProduto existente = buscarCategoriaProdutoPorId(id);
         existente.setNome(dto.nome());
@@ -39,6 +44,7 @@ public class CategoriaProdutoService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deletarCategoriaProduto(String id) {
         repository.delete(buscarCategoriaProdutoPorId(id));
     }
