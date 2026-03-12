@@ -8,6 +8,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.repository.ItemFormulaReposit
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ public class ItemFormulaService {
     private final ProdutoRepository produtoRepository;
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public ItemFormulaResponseDTO adicionarInsumoNaReceitaDaFormula(ItemFormulaRequestDTO dto) {
         ItemFormula item = dto.toEntity();
 
@@ -40,6 +42,7 @@ public class ItemFormulaService {
     }
 
     @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<ItemFormulaResponseDTO> consultarInsumosDaReceita(String formulaId) {
         return itemRepository.findByFormulaId(formulaId)
                 .stream()
@@ -48,6 +51,7 @@ public class ItemFormulaService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public void removerInsumoDaReceita(String id) {
         if (!itemRepository.existsById(id)) {
             throw new EntityNotFoundException("Item da fórmula não encontrado.");

@@ -7,6 +7,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.PesagemEventoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class PesagemEventoService {
     private final ProducaoRepository producaoRepository;
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public PesagemEventoResponseDTO registrarLeituraDoSensorIot(PesagemEventoRequestDTO dto) {
         PesagemEvento evento = dto.toEntity();
         Producao producao = producaoRepository.findById(dto.producaoId())
