@@ -1,19 +1,21 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.exceptions;
 
-import com.senai.npsv_gestor_tintas_backend.domain.exceptions.*;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import com.senai.npsv_gestor_tintas_backend.domain.exceptions.CredenciaisInvalidasException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.CredenciaisInvalidasException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     // =================================================================================
