@@ -11,6 +11,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.VendaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ public class VendaService {
 
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO iniciarVenda(IniciarVendaRequestDTO dto) {
         Usuario vendedor = usuarioRepository.findByIdAndAtivoTrue(dto.vendedorId())
                 .orElseThrow(() -> new IllegalArgumentException("Vendedor não encontrado ou inativo."));
@@ -44,24 +46,29 @@ public class VendaService {
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public List<VendaResponseDTO> listarTodas() {
         return vendaRepository.findAll().stream()
                 .map(VendaResponseDTO::fromEntity)
                 .toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO buscarPorId(String id) {
         return vendaRepository.findById(id)
                 .map(VendaResponseDTO::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Venda não encontrada."));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public List<VendaResponseDTO> listarPorVendedor(String vendedorId) {
         return vendaRepository.findByVendedorId(vendedorId).stream()
                 .map(VendaResponseDTO::fromEntity)
                 .toList();
     }
+
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO concluirVenda(String vendaId, ConcluirVendaRequestDTO dto) {
         Venda venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() -> new IllegalArgumentException("Venda não encontrada com o ID informado."));

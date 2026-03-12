@@ -18,7 +18,7 @@ public class UsuarioService {
     private final UsuarioRepository repository;
     private final PasswordEncoder encoder;
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO dto) {
         if (repository.findByEmailAndAtivoTrue(dto.email()).isPresent()) {
             throw new IllegalArgumentException("Este e-mail já está em uso.");
@@ -31,26 +31,26 @@ public class UsuarioService {
         return new UsuarioResponseDTO(repository.save(novoUsuario));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UsuarioResponseDTO> listarUsuariosAtivos() {
         return repository.findAllByAtivoTrue().stream()
                 .map(UsuarioResponseDTO::fromEntity)
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO listarUsuarioPorEmail(String email) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         return new UsuarioResponseDTO(usuario);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO listarUsuarioPorId(String id) {
         var usuario = BuscarUsuarioAtivoPorId(id);
         return new UsuarioResponseDTO(usuario);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO atualizarUsuario(String email, UsuarioRequestDTO dto) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
 
@@ -60,14 +60,14 @@ public class UsuarioService {
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO atualizarSenhaUsuario(String email, String novaSenha) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         usuario.setSenha(encoder.encode(novaSenha));
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deletarUsuario(String email) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         usuario.setAtivo(false);

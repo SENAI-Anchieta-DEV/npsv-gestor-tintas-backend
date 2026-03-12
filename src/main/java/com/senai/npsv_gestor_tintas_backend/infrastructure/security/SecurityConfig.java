@@ -28,23 +28,8 @@ public class SecurityConfig {
 
                         .requestMatchers("/auth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
 
-                        .requestMatchers(
-                                "/api/usuarios/**",
-                                "/api/produtos/**",
-                                "/api/categorias-produtos/**"
-                        ).hasRole("ADMIN")
-
-                        .requestMatchers(
-                                "/api/vendas/**",
-                                "/api/itens-venda/**"
-                        ).hasAnyRole("ADMIN", "VENDEDOR")
-
-                        .requestMatchers(
-                                "/api/producoes/**",
-                                "/api/formulas/**",
-                                "/api/itens-formula/**",
-                                "/api/pesagem-eventos/**"
-                        ).hasAnyRole("ADMIN", "COLORISTA")
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
