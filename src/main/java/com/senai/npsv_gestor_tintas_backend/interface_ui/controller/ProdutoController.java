@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/produtos")
+@CrossOrigin(origins = "http://localhost:1234", originPatterns = "http://localhost:56135")
 @RequiredArgsConstructor
 public class ProdutoController {
     private final ProdutoService service;
