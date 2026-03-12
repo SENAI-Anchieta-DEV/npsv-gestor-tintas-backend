@@ -44,19 +44,19 @@ public class VendaService {
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
 
-    public List<VendaResponseDTO> listarTodas() {
+    public List<VendaResponseDTO> listarVendas() {
         return vendaRepository.findAll().stream()
                 .map(VendaResponseDTO::fromEntity)
                 .toList();
     }
 
-    public VendaResponseDTO buscarPorId(String id) {
+    public VendaResponseDTO listarVendaPorId(String id) {
         return vendaRepository.findById(id)
                 .map(VendaResponseDTO::fromEntity)
                 .orElseThrow(() -> new EntityNotFoundException("Venda não encontrada."));
     }
 
-    public List<VendaResponseDTO> listarPorVendedor(String vendedorId) {
+    public List<VendaResponseDTO> listarVendasPorVendedor(String vendedorId) {
         return vendaRepository.findByVendedorId(vendedorId).stream()
                 .map(VendaResponseDTO::fromEntity)
                 .toList();

@@ -19,30 +19,30 @@ public class ProducaoController {
     private final ProducaoService producaoService;
 
     @PostMapping
-    public ResponseEntity<ProducaoResponseDTO> iniciarOrdemDeProducao(@Valid @RequestBody ProducaoRequestDTO dto) {
-        ProducaoResponseDTO response = producaoService.iniciarOrdemDeProducao(dto);
+    public ResponseEntity<ProducaoResponseDTO> iniciarProducao(@Valid @RequestBody ProducaoRequestDTO dto) {
+        ProducaoResponseDTO response = producaoService.iniciarProducao(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.id()).toUri();
         return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProducaoResponseDTO>> consultarOrdensDeProducaoAtivas() {
-        return ResponseEntity.ok(producaoService.consultarOrdensDeProducaoAtivas());
+    public ResponseEntity<List<ProducaoResponseDTO>> listarProducoesAtivas() {
+        return ResponseEntity.ok(producaoService.listarProducoesAtivas());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProducaoResponseDTO> consultarDetalhesDaOrdem(@PathVariable String id) {
-        return ResponseEntity.ok(producaoService.consultarDetalhesDaOrdem(id));
+    public ResponseEntity<ProducaoResponseDTO> listarProducaoPorId(@PathVariable String id) {
+        return ResponseEntity.ok(producaoService.listarProducaoPorId(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> cancelarOrdemDeProducao(@PathVariable String id) {
-        producaoService.cancelarOrdemDeProducao(id);
+    public ResponseEntity<Void> cancelarProducao(@PathVariable String id) {
+        producaoService.cancelarProducao(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/concluir")
-    public ResponseEntity<ProducaoResponseDTO> concluirProcessoDeProducao(@PathVariable String id) {
-        return ResponseEntity.ok(producaoService.concluirProcessoDeProducao(id));
+    public ResponseEntity<ProducaoResponseDTO> concluirProducao(@PathVariable String id) {
+        return ResponseEntity.ok(producaoService.concluirProducao(id));
     }
 }
