@@ -13,6 +13,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.exception.VendaBloqueadaExcep
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.VendaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ public class VendaService {
     private final ProdutoRepository produtoRepository;
     private final UsuarioRepository usuarioRepository;
 
+
     @Transactional
     public VendaResponseDTO iniciarVenda(IniciarVendaRequestDTO dto) {
         Usuario vendedor = usuarioRepository.findByIdAndAtivoTrue(dto.vendedorId())
@@ -46,25 +48,23 @@ public class VendaService {
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
 
-    // Leitura (Read)
-    public List<VendaResponseDTO> listarTodas() {
+    public List<VendaResponseDTO> listarVendas() {
         return vendaRepository.findAll().stream()
                 .map(VendaResponseDTO::fromEntity)
                 .toList();
     }
 
-    public VendaResponseDTO buscarPorId(String id) {
+    public VendaResponseDTO listarVendaPorId(String id) {
         return vendaRepository.findById(id)
                 .map(VendaResponseDTO::fromEntity)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada."));
     }
 
-    public List<VendaResponseDTO> listarPorVendedor(String vendedorId) {
+    public List<VendaResponseDTO> listarVendasPorVendedor(String vendedorId) {
         return vendaRepository.findByVendedorId(vendedorId).stream()
                 .map(VendaResponseDTO::fromEntity)
                 .toList();
     }
-
     @Transactional
     public VendaResponseDTO concluirVenda(String vendaId, ConcluirVendaRequestDTO dto) {
         Venda venda = vendaRepository.findById(vendaId)
@@ -74,30 +74,25 @@ public class VendaService {
             throw new VendaBloqueadaException("Apenas vendas abertas podem ser concluídas.");
         }
 
-        // Validação da Venda Vazia (Lança a regra genérica com um código customizado RN04)
         if (dto.itens() == null || dto.itens().isEmpty()) {
             throw new RegraNegocioException("Não é possível concluir uma venda sem itens.", "RN04");
         }
 
         BigDecimal valorTotal = BigDecimal.ZERO;
 
-        // Iteração de Itens
         for (VendaItemRequestDTO itemDto : dto.itens()) {
             Produto produto = produtoRepository.findById(itemDto.produtoId())
                     .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado: " + itemDto.produtoId()));
 
-            // Validação de Stock (com a exceção customizada RN02)
             if (produto.getQuantidadeEstoque().compareTo(itemDto.quantidade()) < 0) {
                 throw new EstoqueBaixoException(String.format(
                         "Estoque insuficiente para o produto '%s'. Solicitado: %s, Disponível: %s",
                         produto.getDescricao(), itemDto.quantidade(), produto.getQuantidadeEstoque()));
             }
 
-            // Atualização de Stock
             produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().subtract(itemDto.quantidade()));
             produtoRepository.save(produto);
 
-            // Registo do ItemVenda
             ItemVenda novoItem = ItemVenda.builder()
                     .venda(venda)
                     .produto(produto)
@@ -107,11 +102,9 @@ public class VendaService {
 
             venda.getItens().add(novoItem);
 
-            // Cálculo Financeiro
             valorTotal = valorTotal.add(produto.getPrecoVenda().multiply(itemDto.quantidade()));
         }
 
-        // Finalização da Venda
         venda.setValorTotal(valorTotal);
         venda.setFormaPagamento(dto.formaPagamento());
         venda.setDataFechamento(LocalDateTime.now());

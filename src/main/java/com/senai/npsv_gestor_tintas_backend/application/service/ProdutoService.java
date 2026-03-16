@@ -22,8 +22,7 @@ public class ProdutoService {
     @Transactional
     public ProdutoResponseDTO registrarProduto(ProdutoRequestDTO dto) {
         Produto produto = dto.toEntity();
-        produto.setCategoria(categoriaRepository.findById(dto.categoriaId())
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Categoria informada não existe.")));
+        produto.setCategoria(buscarCategoriaProdutoPorId(dto.categoriaId()));
         return ProdutoResponseDTO.fromEntity(produtoRepository.save(produto));
     }
 
@@ -32,8 +31,7 @@ public class ProdutoService {
     }
 
     public ProdutoResponseDTO listarProdutoPorId(String id) {
-        Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado no estoque."));
+        Produto produto = buscarProdutoPorId(id);
         return ProdutoResponseDTO.fromEntity(produto);
     }
 
@@ -57,12 +55,10 @@ public class ProdutoService {
     }
 
     private Produto buscarProdutoPorId(String id) {
-        return produtoRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado."));
+        return produtoRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado."));
     }
 
     private CategoriaProduto buscarCategoriaProdutoPorId(String id) {
-        return categoriaRepository.findById(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Categoria de produto não encontrada."));
+        return categoriaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Categoria de produto não encontrada."));
     }
 }
