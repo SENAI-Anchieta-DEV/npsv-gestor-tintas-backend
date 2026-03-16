@@ -3,6 +3,7 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 import com.senai.npsv_gestor_tintas_backend.application.dto.CategoriaProdutoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.CategoriaProdutoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.CategoriaProduto;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.CategoriaProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,6 @@ public class CategoriaProdutoService {
     }
 
     private CategoriaProduto buscarCategoriaProdutoPorId(String id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Categoria de produto não encontrada."));
+        return repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Categoria de produto não encontrada."));
     }
 }
