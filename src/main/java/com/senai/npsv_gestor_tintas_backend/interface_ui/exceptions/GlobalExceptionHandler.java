@@ -6,14 +6,11 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.CredenciaisInvalidasException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -120,10 +117,12 @@ public class GlobalExceptionHandler {
                 null
         );
 
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
+        Map<String, List<String>> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            String campo = error.getField();
+            String mensagem = error.getDefaultMessage();
+            errors.computeIfAbsent(campo, k -> new ArrayList<>()).add(mensagem);
+        });
 
         problem.setProperty("errors", errors);
         return problem;
@@ -139,11 +138,11 @@ public class GlobalExceptionHandler {
                 null
         );
 
-        Map<String, String> errors = new LinkedHashMap<>();
+        Map<String, List<String>> errors = new LinkedHashMap<>();
         ex.getConstraintViolations().forEach(violation -> {
             String campo = violation.getPropertyPath().toString();
             String mensagem = violation.getMessage();
-            errors.put(campo, mensagem);
+            errors.computeIfAbsent(campo, k -> new ArrayList<>()).add(mensagem);
         });
 
         problem.setProperty("errors", errors);

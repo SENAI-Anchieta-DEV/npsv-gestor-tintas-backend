@@ -47,7 +47,7 @@ public class UsuarioService {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     public UsuarioResponseDTO listarUsuarioPorId(String id) {
-        var usuario = BuscarUsuarioAtivoPorId(id);
+        var usuario = buscarUsuarioAtivoPorId(id);
         return new UsuarioResponseDTO(usuario);
     }
 
@@ -80,7 +80,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário não encontrado ou inativo"));
     }
 
-    private Usuario BuscarUsuarioAtivoPorId(String id) {
+    private Usuario buscarUsuarioAtivoPorId(String id) {
         return repository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário não encontrado ou inativo"));
     }
