@@ -8,6 +8,23 @@ import java.time.Instant;
 
 public class ProblemDetailUtils {
 
+    private static URI resolveType(HttpStatus status) {
+        String baseUrl = "https://gestortintas.com/errors/";
+        String path;
+        if (status == HttpStatus.BAD_REQUEST) {
+            path = "requisicao-invalida";
+        } else if (status == HttpStatus.UNAUTHORIZED) {
+            path = "nao-autenticado";
+        } else if (status == HttpStatus.NOT_FOUND) {
+            path = "nao-encontrado";
+        } else if (status == HttpStatus.CONFLICT) {
+            path = "conflito";
+        } else {
+            path = "regra-de-negocio";
+        }
+        return URI.create(baseUrl + path);
+    }
+
     public static ProblemDetail criarProblemDetail(
             HttpStatus status,
             String title,
@@ -19,7 +36,7 @@ public class ProblemDetailUtils {
 
         problemDetail.setTitle(title);
 
-        problemDetail.setType(URI.create("https://gestortintas.com/errors/regra-de-negocio"));
+        problemDetail.setType(resolveType(status));
         problemDetail.setInstance(URI.create(instance));
         problemDetail.setProperty("timestamp", Instant.now());
 
