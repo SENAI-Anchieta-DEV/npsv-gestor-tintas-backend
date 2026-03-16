@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
                 null
         );
 
-        Map<String, List<String>> errors = new HashMap<>();
+        Map<String, List<String>> errors = new LinkedHashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             String campo = error.getField();
             String mensagem = error.getDefaultMessage();
@@ -140,7 +140,8 @@ public class GlobalExceptionHandler {
 
         Map<String, List<String>> errors = new LinkedHashMap<>();
         ex.getConstraintViolations().forEach(violation -> {
-            String campo = violation.getPropertyPath().toString();
+            String caminhoCompleto = violation.getPropertyPath().toString();
+            String campo = caminhoCompleto.substring(caminhoCompleto.lastIndexOf('.') + 1);
             String mensagem = violation.getMessage();
             errors.computeIfAbsent(campo, k -> new ArrayList<>()).add(mensagem);
         });
