@@ -5,7 +5,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.CredenciaisInvalidasException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -96,13 +99,40 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ProblemDetail handleCredenciaisInvalidas(CredenciaisInvalidasException ex, HttpServletRequest request) {
         return ProblemDetailUtils.criarProblemDetail(
-                HttpStatus.UNAUTHORIZED, // 401
-                "Falha na Autenticação",
+                HttpStatus.UNAUTHORIZED,
+                "Credenciais Inválidas",
                 ex.getMessage(),
                 request.getRequestURI(),
                 null
         );
     }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ProblemDetail handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.UNAUTHORIZED,
+                "Não Autenticado",
+                "Necessário enviar um token JWT válido para acessar este recurso.",
+                request.getRequestURI(),
+                null
+        );
+    }
+
+    // =================================================================================
+    // FORBIDDEN - ACESSO NEGADO (STATUS 403)
+    // =================================================================================
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ProblemDetail handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.FORBIDDEN,
+                "Acesso Negado",
+                "Você não tem as permissões necessárias para executar esta ação.",
+                request.getRequestURI(),
+                null
+        );
+    }
+
     // =================================================================================
     // TRATAMENTO DE ERROS DE VALIDAÇÃO DO SPRING (STATUS 400 - BAD REQUEST)
     // =================================================================================
