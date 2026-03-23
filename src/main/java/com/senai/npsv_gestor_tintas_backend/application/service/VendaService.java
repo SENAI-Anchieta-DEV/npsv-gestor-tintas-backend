@@ -13,6 +13,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.exception.VendaBloqueadaExcep
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.VendaRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.service.ProdutoDomainService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class VendaService {
     private final VendaRepository vendaRepository;
     private final ProdutoRepository produtoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ProdutoDomainService produtoDomainService;
 
 
     @Transactional
@@ -84,14 +86,7 @@ public class VendaService {
             Produto produto = produtoRepository.findById(itemDto.produtoId())
                     .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado: " + itemDto.produtoId()));
 
-            if (produto.getQuantidadeEstoque().compareTo(itemDto.quantidade()) < 0) {
-                throw new EstoqueBaixoException(String.format(
-                        "Estoque insuficiente para o produto '%s'. Solicitado: %s, Disponível: %s",
-                        produto.getDescricao(), itemDto.quantidade(), produto.getQuantidadeEstoque()));
-            }
-
-            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().subtract(itemDto.quantidade()));
-            produtoRepository.save(produto);
+            produtoDomainService.darBaixaEstoque(produto, itemDto.quantidade());
 
             ItemVenda novoItem = ItemVenda.builder()
                     .venda(venda)
