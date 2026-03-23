@@ -11,6 +11,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.repository.ItemFormulaReposit
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.service.ProdutoDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProducaoService {
     private final ProducaoRepository producaoRepository;
-    private final ProdutoRepository produtoRepository;
     private final ItemFormulaRepository itemFormulaRepository;
     private final UsuarioRepository usuarioRepository;
     private final FormulaRepository formulaRepository;
+    private final ProdutoDomainService produtoDomainService;
 
     @Transactional
     public ProducaoResponseDTO iniciarProducao(ProducaoRequestDTO dto) {
@@ -85,14 +86,8 @@ public class ProducaoService {
         for (ItemFormula item : insumosNecessarios) {
             Produto insumo = item.getInsumo();
             BigDecimal qtdNecessaria = item.getQuantidadeNecessaria();
-            BigDecimal estoqueAtual = insumo.getQuantidadeEstoque();
 
-            if (estoqueAtual.compareTo(qtdNecessaria) < 0) {
-                throw new RuntimeException("Estoque insuficiente para o insumo: " + insumo.getDescricao());
-            }
-
-            insumo.setQuantidadeEstoque(estoqueAtual.subtract(qtdNecessaria));
-            produtoRepository.save(insumo);
+            produtoDomainService.darBaixaEstoque(insumo, qtdNecessaria);
         }
         log.info("--- FIM DA BAIXA DE ESTOQUE ---");
     }
