@@ -28,12 +28,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProducaoService {
     private final ProducaoRepository producaoRepository;
+    private final ProdutoRepository produtoRepository;
     private final ItemFormulaRepository itemFormulaRepository;
     private final UsuarioRepository usuarioRepository;
     private final FormulaRepository formulaRepository;
-    private final ProdutoRepository produtoRepository;
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public ProducaoResponseDTO iniciarProducao(ProducaoRequestDTO dto) {
         Producao producao = dto.toEntity();
         producao.setColorista(usuarioRepository.findByIdAndAtivoTrue(dto.coloristaId())
@@ -47,18 +48,21 @@ public class ProducaoService {
         return ProducaoResponseDTO.fromEntity(producaoRepository.save(producao));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<ProducaoResponseDTO> listarProducoesAtivas() {
         return producaoRepository.findAll().stream()
                 .filter(p -> p.getStatus() != StatusProducao.CANCELADO)
                 .map(ProducaoResponseDTO::fromEntity).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public ProducaoResponseDTO listarProducaoPorId(String id) {
         Producao producao = buscarProducaoPorId(id);
         return ProducaoResponseDTO.fromEntity(producao);
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public void cancelarProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
 
@@ -91,6 +95,7 @@ public class ProducaoService {
     }
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public ProducaoResponseDTO concluirProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
 

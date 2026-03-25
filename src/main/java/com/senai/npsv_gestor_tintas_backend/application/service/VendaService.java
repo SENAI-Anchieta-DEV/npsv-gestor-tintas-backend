@@ -13,7 +13,9 @@ import com.senai.npsv_gestor_tintas_backend.domain.exception.VendaBloqueadaExcep
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.VendaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +34,7 @@ public class VendaService {
 
 
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO iniciarVenda(IniciarVendaRequestDTO dto) {
         Usuario vendedor = usuarioRepository.findByIdAndAtivoTrue(dto.vendedorId())
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Vendedor não encontrado ou inativo."));
@@ -47,18 +50,21 @@ public class VendaService {
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public List<VendaResponseDTO> listarVendas() {
         return vendaRepository.findAll().stream()
                 .map(VendaResponseDTO::fromEntity)
                 .toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO listarVendaPorId(String id) {
         return vendaRepository.findById(id)
                 .map(VendaResponseDTO::fromEntity)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada."));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public List<VendaResponseDTO> listarVendasPorVendedor(String vendedorId) {
         return vendaRepository.findByVendedorId(vendedorId).stream()
                 .map(VendaResponseDTO::fromEntity)
