@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/producoes")
+@CrossOrigin(origins = "http://localhost:1234", originPatterns = "http://localhost:56135")
 @RequiredArgsConstructor
 public class ProducaoController {
     private final ProducaoService producaoService;
@@ -39,6 +40,11 @@ public class ProducaoController {
     public ResponseEntity<Void> cancelarProducao(@PathVariable String id) {
         producaoService.cancelarProducao(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/perda-total")
+    public ResponseEntity<ProducaoResponseDTO> registrarPerdaTotal(@PathVariable String id) {
+        return ResponseEntity.ok(producaoService.registrarPerdaTotal(id));
     }
 
     @PatchMapping("/{id}/concluir")

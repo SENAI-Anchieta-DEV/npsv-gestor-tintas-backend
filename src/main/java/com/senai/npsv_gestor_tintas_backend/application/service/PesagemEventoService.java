@@ -4,15 +4,18 @@ import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoRequest
 import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.PesagemEvento;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
+import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.PesagemEventoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PesagemEventoService {
@@ -25,6 +28,11 @@ public class PesagemEventoService {
         PesagemEvento evento = dto.toEntity();
         Producao producao = producaoRepository.findById(dto.producaoId())
                 .orElseThrow(() -> new RuntimeException("Ordem de Produção não encontrada. A balança perdeu a referência."));
+
+        if (producao.getStatus() == StatusProducao.PENDENTE) {
+            producao.setStatus(StatusProducao.PROCESSANDO);
+            log.info("Produção {} iniciada fisicamente. Status alterado para PROCESSANDO.", producao.getId());
+        }
 
         evento.setProducao(producao);
         evento.setTimestamp(LocalDateTime.now());

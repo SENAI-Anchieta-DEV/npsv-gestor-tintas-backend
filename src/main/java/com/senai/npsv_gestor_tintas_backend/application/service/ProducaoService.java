@@ -6,6 +6,8 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueBaixoException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.RegraNegocioException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.FormulaRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ItemFormulaRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
@@ -63,8 +65,33 @@ public class ProducaoService {
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public void cancelarProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
+
+        if (producao.getStatus() != StatusProducao.PENDENTE) {
+            throw new RegraNegocioException(
+                    "Apenas ordens PENDENTES podem ser canceladas. Se a mistura já foi iniciada, utilize o registro de PERDA TOTAL.",
+                    null
+            );
+        }
+
         producao.setStatus(StatusProducao.CANCELADO);
         producaoRepository.save(producao);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
+    public ProducaoResponseDTO registrarPerdaTotal(String id) {
+        Producao producao = buscarProducaoPorId(id);
+
+        if (producao.getStatus() == StatusProducao.CONCLUIDO || producao.getStatus() == StatusProducao.CANCELADO) {
+            throw new RegraNegocioException("Não é possível registrar perda para uma ordem já concluída ou cancelada.", null);
+        }
+
+        producao.setStatus(StatusProducao.PERDA_TOTAL);
+        Producao producaoSalva = producaoRepository.save(producao);
+
+        darBaixaEstoqueProducao(producaoSalva);
+
+        return ProducaoResponseDTO.fromEntity(producaoSalva);
     }
 
     @Transactional
@@ -92,7 +119,13 @@ public class ProducaoService {
             Produto insumo = item.getInsumo();
             BigDecimal qtdNecessaria = item.getQuantidadeNecessaria();
 
-            produtoDomainService.darBaixaEstoque(insumo, qtdNecessaria);
+            boolean possuiEstoqueSuficiente = produtoRepository.darBaixaEstoque(insumo.getId(), qtdNecessaria);
+
+            if (!possuiEstoqueSuficiente) {
+                throw new EstoqueBaixoException(String.format(
+                        "Estoque insuficiente para o insumo '%s'. Necessário: %s",
+                        insumo.getDescricao(), qtdNecessaria));
+            }
         }
         log.info("--- FIM DA BAIXA DE ESTOQUE ---");
     }
