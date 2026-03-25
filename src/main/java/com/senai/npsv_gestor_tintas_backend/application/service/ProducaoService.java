@@ -96,7 +96,7 @@ public class ProducaoService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
-    public ProducaoResponseDTO concluirProcessoDeProducao(String id) {
+    public ProducaoResponseDTO concluirProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
 
         if (producao.getStatus() == StatusProducao.CONCLUIDO) {
