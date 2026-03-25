@@ -3,6 +3,8 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeDuplicadaException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,39 +20,38 @@ public class UsuarioService {
     private final UsuarioRepository repository;
     private final PasswordEncoder encoder;
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO dto) {
         if (repository.findByEmailAndAtivoTrue(dto.email()).isPresent()) {
-            throw new IllegalArgumentException("Este e-mail já está em uso.");
+            throw new EntidadeDuplicadaException("Este e-mail já está em uso.");
         }
 
         Usuario novoUsuario = dto.toEntity();
-
         novoUsuario.setSenha(encoder.encode(dto.senha()));
 
         return new UsuarioResponseDTO(repository.save(novoUsuario));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UsuarioResponseDTO> listarUsuariosAtivos() {
         return repository.findAllByAtivoTrue().stream()
                 .map(UsuarioResponseDTO::fromEntity)
                 .toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO listarUsuarioPorEmail(String email) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         return new UsuarioResponseDTO(usuario);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO listarUsuarioPorId(String id) {
-        var usuario = BuscarUsuarioAtivoPorId(id);
+        var usuario = buscarUsuarioAtivoPorId(id);
         return new UsuarioResponseDTO(usuario);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO atualizarUsuario(String email, UsuarioRequestDTO dto) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
 
@@ -60,14 +61,14 @@ public class UsuarioService {
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO atualizarSenhaUsuario(String email, String novaSenha) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         usuario.setSenha(encoder.encode(novaSenha));
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public void deletarUsuario(String email) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         usuario.setAtivo(false);
@@ -76,11 +77,11 @@ public class UsuarioService {
 
     private Usuario buscarUsuarioAtivoPorEmail(String email) {
         return repository.findByEmailAndAtivoTrue(email)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado ou inativo"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário não encontrado ou inativo"));
     }
 
-    private Usuario BuscarUsuarioAtivoPorId(String id) {
+    private Usuario buscarUsuarioAtivoPorId(String id) {
         return repository.findByIdAndAtivoTrue(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado ou inativo"));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Usuário não encontrado ou inativo"));
     }
 }

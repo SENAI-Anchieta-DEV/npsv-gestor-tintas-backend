@@ -3,8 +3,10 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 import com.senai.npsv_gestor_tintas_backend.application.dto.CategoriaProdutoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.CategoriaProdutoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.CategoriaProduto;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.CategoriaProdutoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,30 +18,39 @@ public class CategoriaProdutoService {
     private final CategoriaProdutoRepository repository;
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoriaProdutoResponseDTO registrarCategoriaProduto(CategoriaProdutoRequestDTO dto) {
         CategoriaProduto categoria = repository.save(dto.toEntity());
         return CategoriaProdutoResponseDTO.fromEntity(categoria);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<CategoriaProdutoResponseDTO> listarCategoriasProdutos() {
         return repository.findAll().stream().map(CategoriaProdutoResponseDTO::fromEntity).toList();
     }
 
-    public CategoriaProdutoResponseDTO buscarCategoriaProdutoPorId(String id) {
-        CategoriaProduto categoria = repository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada no catálogo."));
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
+    public CategoriaProdutoResponseDTO listarCategoriaProdutoPorId(String id) {
+        CategoriaProduto categoria = buscarCategoriaProdutoPorId(id);
         return CategoriaProdutoResponseDTO.fromEntity(categoria);
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public CategoriaProdutoResponseDTO atualizarCategoriaProduto(String id, CategoriaProdutoRequestDTO dto) {
-        CategoriaProduto existente = repository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada."));
+        CategoriaProduto existente = buscarCategoriaProdutoPorId(id);
         existente.setNome(dto.nome());
         existente.setDescricao(dto.descricao());
         return CategoriaProdutoResponseDTO.fromEntity(repository.save(existente));
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public void deletarCategoriaProduto(String id) {
-        repository.delete(repository.findById(id).orElseThrow(() -> new RuntimeException("Categoria não encontrada.")));
+        repository.delete(buscarCategoriaProdutoPorId(id));
+    }
+
+    private CategoriaProduto buscarCategoriaProdutoPorId(String id) {
+        return repository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Categoria de produto não encontrada."));
     }
 }
