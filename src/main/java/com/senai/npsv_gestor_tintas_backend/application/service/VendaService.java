@@ -13,7 +13,6 @@ import com.senai.npsv_gestor_tintas_backend.domain.exception.VendaBloqueadaExcep
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.VendaRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -70,7 +69,9 @@ public class VendaService {
                 .map(VendaResponseDTO::fromEntity)
                 .toList();
     }
+
     @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO concluirVenda(String vendaId, ConcluirVendaRequestDTO dto) {
         Venda venda = vendaRepository.findById(vendaId)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada com o ID informado."));
