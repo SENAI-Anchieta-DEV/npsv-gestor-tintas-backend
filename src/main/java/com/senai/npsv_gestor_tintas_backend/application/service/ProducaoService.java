@@ -6,12 +6,12 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueBaixoException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.FormulaRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ItemFormulaRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
-import com.senai.npsv_gestor_tintas_backend.domain.service.ProdutoDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class ProducaoService {
     private final ItemFormulaRepository itemFormulaRepository;
     private final UsuarioRepository usuarioRepository;
     private final FormulaRepository formulaRepository;
-    private final ProdutoDomainService produtoDomainService;
+    private final ProdutoRepository produtoRepository;
 
     @Transactional
     public ProducaoResponseDTO iniciarProducao(ProducaoRequestDTO dto) {
@@ -87,7 +87,13 @@ public class ProducaoService {
             Produto insumo = item.getInsumo();
             BigDecimal qtdNecessaria = item.getQuantidadeNecessaria();
 
-            produtoDomainService.darBaixaEstoque(insumo, qtdNecessaria);
+            boolean possuiEstoqueSuficiente = produtoRepository.darBaixaEstoque(insumo.getId(), qtdNecessaria);
+
+            if (!possuiEstoqueSuficiente) {
+                throw new EstoqueBaixoException(String.format(
+                        "Estoque insuficiente para o insumo '%s'. Necessário: %s",
+                        insumo.getDescricao(), qtdNecessaria));
+            }
         }
         log.info("--- FIM DA BAIXA DE ESTOQUE ---");
     }
