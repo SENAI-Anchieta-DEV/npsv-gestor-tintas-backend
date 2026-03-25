@@ -6,14 +6,16 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueBaixoException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.RegraNegocioException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.FormulaRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ItemFormulaRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
-import com.senai.npsv_gestor_tintas_backend.domain.service.ProdutoDomainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +31,7 @@ public class ProducaoService {
     private final ItemFormulaRepository itemFormulaRepository;
     private final UsuarioRepository usuarioRepository;
     private final FormulaRepository formulaRepository;
-    private final ProdutoDomainService produtoDomainService;
+    private final ProdutoRepository produtoRepository;
 
     @Transactional
     public ProducaoResponseDTO iniciarProducao(ProducaoRequestDTO dto) {
@@ -59,8 +61,33 @@ public class ProducaoService {
     @Transactional
     public void cancelarProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
+
+        if (producao.getStatus() != StatusProducao.PENDENTE) {
+            throw new RegraNegocioException(
+                    "Apenas ordens PENDENTES podem ser canceladas. Se a mistura já foi iniciada, utilize o registro de PERDA TOTAL.",
+                    null
+            );
+        }
+
         producao.setStatus(StatusProducao.CANCELADO);
         producaoRepository.save(producao);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
+    public ProducaoResponseDTO registrarPerdaTotal(String id) {
+        Producao producao = buscarProducaoPorId(id);
+
+        if (producao.getStatus() == StatusProducao.CONCLUIDO || producao.getStatus() == StatusProducao.CANCELADO) {
+            throw new RegraNegocioException("Não é possível registrar perda para uma ordem já concluída ou cancelada.", null);
+        }
+
+        producao.setStatus(StatusProducao.PERDA_TOTAL);
+        Producao producaoSalva = producaoRepository.save(producao);
+
+        darBaixaEstoqueProducao(producaoSalva);
+
+        return ProducaoResponseDTO.fromEntity(producaoSalva);
     }
 
     @Transactional
@@ -87,7 +114,13 @@ public class ProducaoService {
             Produto insumo = item.getInsumo();
             BigDecimal qtdNecessaria = item.getQuantidadeNecessaria();
 
-            produtoDomainService.darBaixaEstoque(insumo, qtdNecessaria);
+            boolean possuiEstoqueSuficiente = produtoRepository.darBaixaEstoque(insumo.getId(), qtdNecessaria);
+
+            if (!possuiEstoqueSuficiente) {
+                throw new EstoqueBaixoException(String.format(
+                        "Estoque insuficiente para o insumo '%s'. Necessário: %s",
+                        insumo.getDescricao(), qtdNecessaria));
+            }
         }
         log.info("--- FIM DA BAIXA DE ESTOQUE ---");
     }
