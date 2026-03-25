@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.domain.entity;
 
+import com.senai.npsv_gestor_tintas_backend.domain.enums.FormaPagamento;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -30,10 +31,11 @@ public class Venda {
     @Column(nullable = false)
     private LocalDateTime dataHora;
 
-
     private LocalDateTime dataFechamento;
 
-    private String formaPagamento;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private FormaPagamento formaPagamento;
 
     @NotNull
     @Column(nullable = false)

@@ -33,7 +33,7 @@ public class ProducaoService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
-    public ProducaoResponseDTO iniciarOrdemDeProducao(ProducaoRequestDTO dto) {
+    public ProducaoResponseDTO iniciarProducao(ProducaoRequestDTO dto) {
         Producao producao = dto.toEntity();
         producao.setColorista(usuarioRepository.findByIdAndAtivoTrue(dto.coloristaId())
                 .orElseThrow(() -> new RuntimeException("Colorista não encontrado ou inativo.")));
@@ -47,21 +47,21 @@ public class ProducaoService {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
-    public List<ProducaoResponseDTO> consultarOrdensDeProducaoAtivas() {
+    public List<ProducaoResponseDTO> listarProducoesAtivas() {
         return producaoRepository.findAll().stream()
                 .filter(p -> p.getStatus() != StatusProducao.CANCELADO)
                 .map(ProducaoResponseDTO::fromEntity).toList();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
-    public ProducaoResponseDTO consultarDetalhesDaOrdem(String id) {
+    public ProducaoResponseDTO listarProducaoPorId(String id) {
         Producao producao = buscarProducaoPorId(id);
         return ProducaoResponseDTO.fromEntity(producao);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
-    public void cancelarOrdemDeProducao(String id) {
+    public void cancelarProducao(String id) {
         Producao producao = buscarProducaoPorId(id);
         producao.setStatus(StatusProducao.CANCELADO);
         producaoRepository.save(producao);
@@ -79,26 +79,20 @@ public class ProducaoService {
         producao.setStatus(StatusProducao.CONCLUIDO);
         Producao producaoSalva = producaoRepository.save(producao);
 
-        deduzirInsumosDoEstoqueGlobal(producaoSalva);
+        darBaixaEstoqueProducao(producaoSalva);
 
         return ProducaoResponseDTO.fromEntity(producaoSalva);
     }
 
-    private void deduzirInsumosDoEstoqueGlobal(Producao producao) {
+    private void darBaixaEstoqueProducao(Producao producao) {
         log.info("--- INÍCIO DA BAIXA DE ESTOQUE (PRODUÇÃO {}) ---", producao.getId());
         List<ItemFormula> insumosNecessarios = itemFormulaRepository.findByFormulaId(producao.getFormula().getId());
 
         for (ItemFormula item : insumosNecessarios) {
             Produto insumo = item.getInsumo();
             BigDecimal qtdNecessaria = item.getQuantidadeNecessaria();
-            BigDecimal estoqueAtual = insumo.getQuantidadeEstoque();
 
-            if (estoqueAtual.compareTo(qtdNecessaria) < 0) {
-                throw new RuntimeException("Estoque insuficiente para o insumo: " + insumo.getDescricao());
-            }
-
-            insumo.setQuantidadeEstoque(estoqueAtual.subtract(qtdNecessaria));
-            produtoRepository.save(insumo);
+            produtoDomainService.darBaixaEstoque(insumo, qtdNecessaria);
         }
         log.info("--- FIM DA BAIXA DE ESTOQUE ---");
     }

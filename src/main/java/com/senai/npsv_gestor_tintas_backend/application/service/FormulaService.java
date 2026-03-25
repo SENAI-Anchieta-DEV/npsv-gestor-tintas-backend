@@ -19,26 +19,26 @@ public class FormulaService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
-    public FormulaResponseDTO criarNovaReceitaDeFormula(FormulaRequestDTO dto) {
+    public FormulaResponseDTO registrarFormula(FormulaRequestDTO dto) {
         Formula formula = dto.toEntity();
         formula.setDataCriacao(LocalDateTime.now());
         return FormulaResponseDTO.fromEntity(repository.save(formula));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
-    public List<FormulaResponseDTO> listarReceitasDeFormulas() {
+    public List<FormulaResponseDTO> listarFormulas() {
         return repository.findAll().stream().map(FormulaResponseDTO::fromEntity).toList();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
-    public FormulaResponseDTO consultarEspecificacoesDaFormula(String id) {
+    public FormulaResponseDTO listarFormulaPorId(String id) {
         Formula formula = buscarFormulaPorId(id);
         return FormulaResponseDTO.fromEntity(formula);
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
-    public FormulaResponseDTO alterarEspecificacoesDaFormula(String id, FormulaRequestDTO dto) {
+    public FormulaResponseDTO atualizarFormula(String id, FormulaRequestDTO dto) {
         Formula formula = buscarFormulaPorId(id);
         formula.setCodigoInterno(dto.codigoInterno());
         formula.setNomeCor(dto.nomeCor());
@@ -47,7 +47,7 @@ public class FormulaService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
-    public void inativarReceitaDeFormula(String id) {
+    public void deletarFormula(String id) {
         repository.delete(buscarFormulaPorId(id));
     }
 

@@ -21,7 +21,7 @@ public class PesagemEventoService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
-    public PesagemEventoResponseDTO registrarLeituraDoSensorIot(PesagemEventoRequestDTO dto) {
+    public PesagemEventoResponseDTO registrarPesagemEvento(PesagemEventoRequestDTO dto) {
         PesagemEvento evento = dto.toEntity();
         Producao producao = producaoRepository.findById(dto.producaoId())
                 .orElseThrow(() -> new RuntimeException("Ordem de Produção não encontrada. A balança perdeu a referência."));

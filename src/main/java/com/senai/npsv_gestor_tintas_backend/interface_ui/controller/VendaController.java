@@ -24,17 +24,17 @@ public class VendaController {
 
     @GetMapping
     public ResponseEntity<List<VendaResponseDTO>> listarVendas() {
-        return ResponseEntity.ok(vendaService.listarTodas());
+        return ResponseEntity.ok(vendaService.listarVendas());
     }
 
     @GetMapping("/id/{id}")
     public ResponseEntity<VendaResponseDTO> listarVendaPorId(@PathVariable String id) {
-        return ResponseEntity.ok(vendaService.buscarPorId(id));
+        return ResponseEntity.ok(vendaService.listarVendaPorId(id));
     }
 
     @GetMapping("/vendedor/{vendedorId}")
     public ResponseEntity<List<VendaResponseDTO>> listarVendasPorVendedor(@PathVariable String vendedorId) {
-        return ResponseEntity.ok(vendaService.listarPorVendedor(vendedorId));
+        return ResponseEntity.ok(vendaService.listarVendasPorVendedor(vendedorId));
 
     }
     @PatchMapping("/{id}/concluir")
