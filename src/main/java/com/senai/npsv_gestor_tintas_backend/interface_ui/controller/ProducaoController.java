@@ -42,6 +42,11 @@ public class ProducaoController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/perda-total")
+    public ResponseEntity<ProducaoResponseDTO> registrarPerdaTotal(@PathVariable String id) {
+        return ResponseEntity.ok(producaoService.registrarPerdaTotal(id));
+    }
+
     @PatchMapping("/{id}/concluir")
     public ResponseEntity<ProducaoResponseDTO> concluirProducao(@PathVariable String id) {
         return ResponseEntity.ok(producaoService.concluirProducao(id));
