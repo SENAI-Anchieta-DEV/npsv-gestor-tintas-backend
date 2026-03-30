@@ -86,7 +86,8 @@ public class VendaService {
             Produto produto = produtoRepository.findById(itemDto.produtoId())
                     .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado: " + itemDto.produtoId()));
 
-            boolean possuiEstoqueSuficiente = produtoRepository.darBaixaEstoque(produto.getId(), itemDto.quantidade());
+            int linhasAfetadas = produtoRepository.darBaixaEstoque(produto.getId(), itemDto.quantidade());
+            boolean possuiEstoqueSuficiente = linhasAfetadas > 0;
 
             if (!possuiEstoqueSuficiente) {
                 throw new EstoqueBaixoException(String.format(

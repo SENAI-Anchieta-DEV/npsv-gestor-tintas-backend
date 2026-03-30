@@ -117,7 +117,8 @@ public class ProducaoService {
             Produto insumo = item.getInsumo();
             BigDecimal qtdNecessaria = item.getQuantidadeNecessaria();
 
-            boolean possuiEstoqueSuficiente = produtoRepository.darBaixaEstoque(insumo.getId(), qtdNecessaria);
+            int linhasAfetadas = produtoRepository.darBaixaEstoque(insumo.getId(), qtdNecessaria);
+            boolean possuiEstoqueSuficiente = linhasAfetadas > 0;
 
             if (!possuiEstoqueSuficiente) {
                 throw new EstoqueBaixoException(String.format(
