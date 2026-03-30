@@ -2,8 +2,13 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 
 import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.ItemFormulaRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Formula;
+import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
+import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.FormulaRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -15,19 +20,22 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FormulaService {
-    private final FormulaRepository repository;
+    private final FormulaRepository formulaRepository;
+    private final ProdutoRepository produtoRepository;
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public FormulaResponseDTO registrarFormula(FormulaRequestDTO dto) {
         Formula formula = dto.toEntity();
-        formula.setDataCriacao(LocalDateTime.now());
-        return FormulaResponseDTO.fromEntity(repository.save(formula));
+
+        adicionarItensNaFormula(formula, dto.itens());
+
+        return FormulaResponseDTO.fromEntity(formulaRepository.save(formula));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<FormulaResponseDTO> listarFormulas() {
-        return repository.findAll().stream().map(FormulaResponseDTO::fromEntity).toList();
+        return formulaRepository.findAll().stream().map(FormulaResponseDTO::fromEntity).toList();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
@@ -40,18 +48,39 @@ public class FormulaService {
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public FormulaResponseDTO atualizarFormula(String id, FormulaRequestDTO dto) {
         Formula formula = buscarFormulaPorId(id);
+
         formula.setCodigoInterno(dto.codigoInterno());
         formula.setNomeCor(dto.nomeCor());
-        return FormulaResponseDTO.fromEntity(repository.save(formula));
+
+        formula.getItens().clear();
+        adicionarItensNaFormula(formula, dto.itens());
+
+        return FormulaResponseDTO.fromEntity(formulaRepository.save(formula));
     }
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public void deletarFormula(String id) {
-        repository.delete(buscarFormulaPorId(id));
+        formulaRepository.delete(buscarFormulaPorId(id));
+    }
+
+    private void adicionarItensNaFormula(Formula formula, List<ItemFormulaRequestDTO> itensDto) {
+        for (ItemFormulaRequestDTO itemDto : itensDto) {
+            Produto insumo = produtoRepository.findById(itemDto.insumoId())
+                    .orElseThrow(() -> new EntidadeNaoEncontradaException("Insumo não encontrado com o ID: " + itemDto.insumoId()));
+
+            ItemFormula novoItem = ItemFormula.builder()
+                    .formula(formula)
+                    .insumo(insumo)
+                    .quantidadeNecessaria(itemDto.quantidadeNecessaria())
+                    .ordemAdicao(itemDto.ordemAdicao())
+                    .build();
+
+            formula.getItens().add(novoItem);
+        }
     }
 
     private Formula buscarFormulaPorId(String id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Fórmula técnica não encontrada."));
+        return formulaRepository.findById(id).orElseThrow(() -> new RuntimeException("Fórmula técnica não encontrada."));
     }
 }

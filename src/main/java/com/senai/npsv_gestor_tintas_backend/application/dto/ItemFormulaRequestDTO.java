@@ -15,17 +15,6 @@ public record ItemFormulaRequestDTO(
         Integer ordemAdicao,
 
         @NotBlank(message = "O ID do insumo (Produto) é obrigatório.")
-        String insumoId,
-
-        @NotBlank(message = "O ID da fórmula é obrigatório.")
-        String formulaId
+        String insumoId
 ) {
-    public ItemFormula toEntity() {
-        return ItemFormula.builder()
-                .quantidadeNecessaria(this.quantidadeNecessaria)
-                .ordemAdicao(this.ordemAdicao)
-                .insumo(Produto.builder().id(this.insumoId).build())
-                .formula(Formula.builder().id(this.formulaId).build())
-                .build();
-    }
 }
