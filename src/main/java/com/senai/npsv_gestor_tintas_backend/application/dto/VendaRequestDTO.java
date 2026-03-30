@@ -6,8 +6,6 @@ import java.math.BigDecimal;
 public record VendaRequestDTO(
         @NotNull(message = "O ID do vendedor é obrigatório.")
         String vendedorId
-
-
 ) {
     public record ItemVendaRequest(
             @NotNull(message = "O ID do produto é obrigatório.")

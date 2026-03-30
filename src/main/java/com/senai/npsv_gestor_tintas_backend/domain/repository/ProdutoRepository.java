@@ -11,11 +11,11 @@ import java.math.BigDecimal;
 public interface ProdutoRepository extends JpaRepository<Produto, String> {
 
     // Atualização atômica para evitar que o estoque fique negativo em compras simultâneas.
-    // Retorna 1 (Sucesso) se tinha estoque e atualizou, ou 0 (Falha) se o estoque era menor que o pedido.
-    @Modifying
+    // Retorna o número de linhas afetadas: 1 (Sucesso) ou 0 (Falha por falta de estoque).
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Produto p " +
             "SET p.quantidadeEstoque = p.quantidadeEstoque - :quantidade " +
             "WHERE p.id = :produtoId AND p.quantidadeEstoque >= :quantidade")
-    boolean darBaixaEstoque(@Param("produtoId") String produtoId,
-                            @Param("quantidade") BigDecimal quantidade);
+    int darBaixaEstoque(@Param("produtoId") String produtoId,
+                        @Param("quantidade") BigDecimal quantidade);
 }

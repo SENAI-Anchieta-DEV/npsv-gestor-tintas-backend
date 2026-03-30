@@ -38,13 +38,9 @@ public class VendaService {
         Usuario vendedor = usuarioRepository.findByIdAndAtivoTrue(dto.vendedorId())
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Vendedor não encontrado ou inativo."));
 
-        Venda venda = Venda.builder()
-                .dataHora(LocalDateTime.now())
-                .vendedor(vendedor)
-                .valorTotal(BigDecimal.ZERO)
-                .status(StatusVenda.ABERTA)
-                .itens(new ArrayList<>())
-                .build();
+        Venda venda = dto.toEntity();
+        venda.setDataHora(LocalDateTime.now());
+        venda.setVendedor(vendedor);
 
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
@@ -86,11 +82,12 @@ public class VendaService {
 
         BigDecimal valorTotal = BigDecimal.ZERO;
 
-        for (VendaItemRequestDTO itemDto : dto.itens()) {
+        for (ItemVendaRequestDTO itemDto : dto.itens()) {
             Produto produto = produtoRepository.findById(itemDto.produtoId())
                     .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado: " + itemDto.produtoId()));
 
-            boolean possuiEstoqueSuficiente = produtoRepository.darBaixaEstoque(produto.getId(), itemDto.quantidade());
+            int linhasAfetadas = produtoRepository.darBaixaEstoque(produto.getId(), itemDto.quantidade());
+            boolean possuiEstoqueSuficiente = linhasAfetadas > 0;
 
             if (!possuiEstoqueSuficiente) {
                 throw new EstoqueBaixoException(String.format(
@@ -98,12 +95,10 @@ public class VendaService {
                         produto.getDescricao(), itemDto.quantidade(), produto.getQuantidadeEstoque()));
             }
 
-            ItemVenda novoItem = ItemVenda.builder()
-                    .venda(venda)
-                    .produto(produto)
-                    .quantidade(itemDto.quantidade())
-                    .precoPraticado(produto.getPrecoVenda())
-                    .build();
+            ItemVenda novoItem = itemDto.toEntity();
+            novoItem.setVenda(venda);
+            novoItem.setProduto(produto);
+            novoItem.setPrecoPraticado(produto.getPrecoVenda());
 
             venda.getItens().add(novoItem);
 
