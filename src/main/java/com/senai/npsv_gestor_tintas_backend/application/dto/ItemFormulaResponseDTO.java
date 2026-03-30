@@ -7,8 +7,7 @@ public record ItemFormulaResponseDTO(
         String id,
         BigDecimal quantidadeNecessaria,
         Integer ordemAdicao,
-        ProdutoResponseDTO insumo,
-        String formulaId
+        ProdutoResponseDTO insumo
 ) {
     public static ItemFormulaResponseDTO fromEntity(ItemFormula item) {
         if (item == null) return null;
@@ -16,8 +15,7 @@ public record ItemFormulaResponseDTO(
                 item.getId(),
                 item.getQuantidadeNecessaria(),
                 item.getOrdemAdicao(),
-                ProdutoResponseDTO.fromEntity(item.getInsumo()),
-                item.getFormula() != null ? item.getFormula().getId() : null
+                ProdutoResponseDTO.fromEntity(item.getInsumo())
         );
     }
 }

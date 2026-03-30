@@ -9,8 +9,7 @@ public record ItemVendaResponseDTO(
         String nomeProduto,
         BigDecimal quantidade,
         BigDecimal precoPraticado,
-        BigDecimal subtotal,
-        String vendaId
+        BigDecimal subtotal
 ) {
     public static ItemVendaResponseDTO fromEntity(ItemVenda item) {
         return new ItemVendaResponseDTO(
@@ -19,8 +18,7 @@ public record ItemVendaResponseDTO(
                 item.getProduto().getDescricao(),
                 item.getQuantidade(),
                 item.getPrecoPraticado(),
-                item.getPrecoPraticado().multiply(item.getQuantidade()), // Subtotal calculado
-                item.getVenda().getId()
+                item.getPrecoPraticado().multiply(item.getQuantidade())
         );
     }
 }

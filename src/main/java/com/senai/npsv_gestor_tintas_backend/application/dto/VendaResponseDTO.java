@@ -10,23 +10,13 @@ public record VendaResponseDTO(
         LocalDateTime dataHora,
         BigDecimal valorTotal,
         String nomeVendedor,
-        List<ItemVendaResponse> itens
+        List<ItemVendaResponseDTO> itens
 ) {
-    public record ItemVendaResponse(
-            String nomeProduto,
-            BigDecimal quantidade,
-            BigDecimal precoPraticado,
-            BigDecimal subtotal
-    ) {}
 
     public static VendaResponseDTO fromEntity(Venda venda) {
-        List<ItemVendaResponse> itensDto = venda.getItens().stream()
-                .map(item -> new ItemVendaResponse(
-                        item.getProduto().getDescricao(),
-                        item.getQuantidade(),
-                        item.getPrecoPraticado(),
-                        item.getPrecoPraticado().multiply(item.getQuantidade())
-                )).toList();
+        List<ItemVendaResponseDTO> itensDto = venda.getItens().stream()
+                .map(ItemVendaResponseDTO::fromEntity)
+                .toList();
 
         return new VendaResponseDTO(
                 venda.getId(),
