@@ -9,7 +9,6 @@ import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueBaixoException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.RegraNegocioException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.FormulaRepository;
-import com.senai.npsv_gestor_tintas_backend.domain.repository.ItemFormulaRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
@@ -29,7 +28,6 @@ import java.util.List;
 public class ProducaoService {
     private final ProducaoRepository producaoRepository;
     private final ProdutoRepository produtoRepository;
-    private final ItemFormulaRepository itemFormulaRepository;
     private final UsuarioRepository usuarioRepository;
     private final FormulaRepository formulaRepository;
 
@@ -113,7 +111,7 @@ public class ProducaoService {
 
     private void darBaixaEstoqueProducao(Producao producao) {
         log.info("--- INÍCIO DA BAIXA DE ESTOQUE (PRODUÇÃO {}) ---", producao.getId());
-        List<ItemFormula> insumosNecessarios = itemFormulaRepository.findByFormulaId(producao.getFormula().getId());
+        List<ItemFormula> insumosNecessarios = producao.getFormula().getItens();
 
         for (ItemFormula item : insumosNecessarios) {
             Produto insumo = item.getInsumo();

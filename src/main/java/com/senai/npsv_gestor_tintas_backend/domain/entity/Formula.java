@@ -2,10 +2,13 @@ package com.senai.npsv_gestor_tintas_backend.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,7 +31,14 @@ public class Formula {
     @Column(nullable = false)
     private String nomeCor;
 
-    @NotNull
-    @Column(nullable = false)
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
+
+    @UpdateTimestamp
+    @Column(nullable = false)
+    private LocalDateTime dataAtualizacao;
+
+    @OneToMany(mappedBy = "formula", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemFormula> itens = new ArrayList<>();
 }
