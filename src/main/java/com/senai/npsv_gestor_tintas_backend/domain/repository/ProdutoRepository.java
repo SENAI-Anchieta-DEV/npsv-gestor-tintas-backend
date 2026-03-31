@@ -12,7 +12,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, String> {
 
     // Atualização atômica para evitar que o estoque fique negativo em compras simultâneas.
     // Retorna o número de linhas afetadas: 1 (Sucesso) ou 0 (Falha por falta de estoque).
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("UPDATE Produto p " +
             "SET p.quantidadeEstoque = p.quantidadeEstoque - :quantidade " +
             "WHERE p.id = :produtoId AND p.quantidadeEstoque >= :quantidade")
