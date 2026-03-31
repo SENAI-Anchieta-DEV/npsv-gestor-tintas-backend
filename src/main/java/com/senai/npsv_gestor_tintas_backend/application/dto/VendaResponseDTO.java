@@ -7,7 +7,7 @@ import java.util.List;
 
 public record VendaResponseDTO(
         String id,
-        LocalDateTime dataHora,
+        LocalDateTime dataAbertura,
         BigDecimal valorTotal,
         String nomeVendedor,
         List<ItemVendaResponseDTO> itens
@@ -20,7 +20,7 @@ public record VendaResponseDTO(
 
         return new VendaResponseDTO(
                 venda.getId(),
-                venda.getDataHora(),
+                venda.getDataAbertura(),
                 venda.getValorTotal(),
                 venda.getVendedor() != null ? venda.getVendedor().getNome() : "Desconhecido",
                 itensDto

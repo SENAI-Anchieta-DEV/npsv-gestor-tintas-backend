@@ -29,12 +29,11 @@ public class Venda {
 
     @NotNull
     @Column(nullable = false)
-    private LocalDateTime dataHora;
+    private LocalDateTime dataAbertura;
 
     private LocalDateTime dataFechamento;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private FormaPagamento formaPagamento;
 
     @NotNull

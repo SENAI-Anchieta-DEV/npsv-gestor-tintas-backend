@@ -39,7 +39,7 @@ public class VendaService {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Vendedor não encontrado ou inativo."));
 
         Venda venda = dto.toEntity();
-        venda.setDataHora(LocalDateTime.now());
+        venda.setDataAbertura(LocalDateTime.now());
         venda.setVendedor(vendedor);
 
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
@@ -94,6 +94,8 @@ public class VendaService {
                         "Estoque insuficiente para o produto '%s'. Solicitado: %s, Disponível na última leitura: %s",
                         produto.getDescricao(), itemDto.quantidade(), produto.getQuantidadeEstoque()));
             }
+
+            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().subtract(itemDto.quantidade()));
 
             ItemVenda novoItem = itemDto.toEntity();
             novoItem.setVenda(venda);
