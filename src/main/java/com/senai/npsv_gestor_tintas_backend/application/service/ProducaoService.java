@@ -125,8 +125,6 @@ public class ProducaoService {
                         "Estoque insuficiente para o insumo '%s'. Necessário: %s",
                         insumo.getDescricao(), qtdNecessaria));
             }
-
-            insumo.setQuantidadeEstoque(insumo.getQuantidadeEstoque().subtract(qtdNecessaria));
         }
         log.info("--- FIM DA BAIXA DE ESTOQUE ---");
     }
