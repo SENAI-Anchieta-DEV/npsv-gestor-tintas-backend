@@ -95,8 +95,6 @@ public class VendaService {
                         produto.getDescricao(), itemDto.quantidade(), produto.getQuantidadeEstoque()));
             }
 
-            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().subtract(itemDto.quantidade()));
-
             ItemVenda novoItem = itemDto.toEntity();
             novoItem.setVenda(venda);
             novoItem.setProduto(produto);
