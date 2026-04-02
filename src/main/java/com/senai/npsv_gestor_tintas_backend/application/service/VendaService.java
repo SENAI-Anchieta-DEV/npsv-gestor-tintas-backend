@@ -7,7 +7,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Venda;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueBaixoException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueInsuficienteException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.RegraNegocioException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.VendaBloqueadaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -90,9 +89,10 @@ public class VendaService {
             boolean possuiEstoqueSuficiente = linhasAfetadas > 0;
 
             if (!possuiEstoqueSuficiente) {
-                throw new EstoqueBaixoException(String.format(
-                        "Estoque insuficiente para o produto '%s'. Necessário: %s",
-                        produto.getDescricao(), itemDto.quantidade()));
+                throw new EstoqueInsuficienteException(String.format(
+                        "Estoque insuficiente para o produto '%s'.",
+                        produto.getDescricao()),
+                        "RN03 – Bloqueio de Venda");
             }
 
             ItemVenda novoItem = itemDto.toEntity();

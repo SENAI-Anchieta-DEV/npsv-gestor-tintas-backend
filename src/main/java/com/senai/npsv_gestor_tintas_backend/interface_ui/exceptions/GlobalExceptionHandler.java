@@ -18,18 +18,14 @@ import java.util.*;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // =================================================================================
-    // TRATAMENTO DE REGRAS DE NEGÓCIO ESPECÍFICAS (STATUS 422 - UNPROCESSABLE ENTITY)
-    // =================================================================================
-
-    @ExceptionHandler(EstoqueBaixoException.class)
-    public ProblemDetail handleEstoqueBaixo(EstoqueBaixoException ex, HttpServletRequest request) {
+    @ExceptionHandler(EstoqueInsuficienteException.class)
+    public ProblemDetail handleEstoqueInsuficiente(EstoqueInsuficienteException ex, HttpServletRequest request) {
         return ProblemDetailUtils.criarProblemDetail(
                 HttpStatus.UNPROCESSABLE_ENTITY,
-                "Violação de Regra de Negócio: Estoque",
+                "Estoque Insuficiente",
                 ex.getMessage(),
                 request.getRequestURI(),
-                ex.getCodigoErro() // Ex: RN02
+                ex.getCodigoRegraNegocio()
         );
     }
 
@@ -40,7 +36,7 @@ public class GlobalExceptionHandler {
                 "Violação de Regra de Negócio: Venda",
                 ex.getMessage(),
                 request.getRequestURI(),
-                ex.getCodigoErro() // Ex: RN03
+                ex.getCodigoRegraNegocio()
         );
     }
 
@@ -51,7 +47,7 @@ public class GlobalExceptionHandler {
                 "Violação de Regra de Negócio: Pesagem",
                 ex.getMessage(),
                 request.getRequestURI(),
-                ex.getCodigoErro() // Ex: RN01
+                ex.getCodigoRegraNegocio()
         );
     }
 
@@ -62,13 +58,21 @@ public class GlobalExceptionHandler {
                 "Violação de Regra de Negócio",
                 ex.getMessage(),
                 request.getRequestURI(),
-                ex.getCodigoErro()
+                ex.getCodigoRegraNegocio()
         );
     }
 
-    // =================================================================================
-    // TRATAMENTO DE ERROS DE RECURSO E ESTADO (STATUS 404 e 409)
-    // =================================================================================
+    @ExceptionHandler(ProducaoSemPesagemException.class)
+    public ProblemDetail handleProducaoSemPesagem(ProducaoSemPesagemException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.UNPROCESSABLE_ENTITY,
+                "Produção sem Pesagem",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+    }
+
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ProblemDetail handleEntidadeNaoEncontrada(EntidadeNaoEncontradaException ex, HttpServletRequest request) {
@@ -92,9 +96,17 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // =================================================================================
-    // TRATAMENTO DE ERROS DE SEGURANÇA E AUTENTICAÇÃO (STATUS 401 - UNAUTHORIZED)
-    // =================================================================================
+    @ExceptionHandler(TransicaoDeStatusInvalidaException.class)
+    public ProblemDetail handleTransicaoInvalida(TransicaoDeStatusInvalidaException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "Conflito de Status",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+    }
+
 
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ProblemDetail handleCredenciaisInvalidas(CredenciaisInvalidasException ex, HttpServletRequest request) {
@@ -118,9 +130,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // =================================================================================
-    // FORBIDDEN - ACESSO NEGADO (STATUS 403)
-    // =================================================================================
 
     @ExceptionHandler(AccessDeniedException.class)
     public ProblemDetail handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
@@ -133,9 +142,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // =================================================================================
-    // TRATAMENTO DE ERROS DE VALIDAÇÃO DO SPRING (STATUS 400 - BAD REQUEST)
-    // =================================================================================
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
