@@ -30,7 +30,7 @@ public class FormulaService {
 
         adicionarItensNaFormula(formula, dto.itens());
 
-        return FormulaResponseDTO.fromEntity(formulaRepository.save(formula));
+        return FormulaResponseDTO.fromEntity(formulaRepository.saveAndFlush(formula));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
@@ -55,7 +55,7 @@ public class FormulaService {
         formula.getItens().clear();
         adicionarItensNaFormula(formula, dto.itens());
 
-        return FormulaResponseDTO.fromEntity(formulaRepository.save(formula));
+        return FormulaResponseDTO.fromEntity(formulaRepository.saveAndFlush(formula));
     }
 
     @Transactional

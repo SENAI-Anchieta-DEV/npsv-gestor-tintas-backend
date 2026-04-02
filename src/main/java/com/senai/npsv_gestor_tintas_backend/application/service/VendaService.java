@@ -91,8 +91,8 @@ public class VendaService {
 
             if (!possuiEstoqueSuficiente) {
                 throw new EstoqueBaixoException(String.format(
-                        "Estoque insuficiente para o produto '%s'. Solicitado: %s, Disponível na última leitura: %s",
-                        produto.getDescricao(), itemDto.quantidade(), produto.getQuantidadeEstoque()));
+                        "Estoque insuficiente para o produto '%s'. Necessário: %s",
+                        produto.getDescricao(), itemDto.quantidade()));
             }
 
             ItemVenda novoItem = itemDto.toEntity();
