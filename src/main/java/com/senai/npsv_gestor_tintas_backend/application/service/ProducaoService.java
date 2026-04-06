@@ -3,7 +3,6 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
-import com.senai.npsv_gestor_tintas_backend.domain.entity.PesagemEvento;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
@@ -34,9 +33,9 @@ public class ProducaoService {
     public ProducaoResponseDTO iniciarProducao(ProducaoRequestDTO dto) {
         Producao producao = dto.toEntity();
         producao.setColorista(usuarioRepository.findByIdAndAtivoTrue(dto.coloristaId())
-                .orElseThrow(() -> new RuntimeException("Colorista não encontrado ou inativo.")));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Colorista não encontrado ou inativo.")));
         producao.setFormula(formulaRepository.findById(dto.formulaId())
-                .orElseThrow(() -> new RuntimeException("Fórmula não encontrada no sistema.")));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Fórmula não encontrada no sistema.")));
 
         producao.setDataHora(LocalDateTime.now());
         producao.setStatus(StatusProducao.PENDENTE);
@@ -63,9 +62,8 @@ public class ProducaoService {
         Producao producao = buscarProducaoPorId(id);
 
         if (producao.getStatus() != StatusProducao.PENDENTE) {
-            throw new RegraNegocioException(
-                    "Apenas ordens PENDENTES podem ser canceladas. Se a mistura já foi iniciada, utilize o registro de PERDA TOTAL.",
-                    null
+            throw new TransicaoDeStatusInvalidaException(
+                    "Apenas ordens PENDENTES podem ser canceladas. Se a mistura já foi iniciada, utilize o registro de PERDA TOTAL."
             );
         }
 
@@ -124,11 +122,15 @@ public class ProducaoService {
         Producao producao = buscarProducaoPorId(id);
 
         if (producao.getStatus() != StatusProducao.PENDENTE && producao.getStatus() != StatusProducao.PROCESSANDO) {
-            throw new TransicaoDeStatusInvalidaException("Não é possível concluir uma produção que está no status: " + producao.getStatus());
+            throw new TransicaoDeStatusInvalidaException(
+                    "Não é possível concluir uma produção que está no status: " + producao.getStatus()
+            );
         }
 
         if (!pesagemEventoRepository.existsByProducaoId(producao.getId())) {
-            throw new ProducaoSemPesagemException("A produção não pode ser concluída pois não possui nenhum evento de pesagem registrado.");
+            throw new ProducaoSemPesagemException(
+                    "A produção não pode ser concluída pois não possui nenhum evento de pesagem registrado."
+            );
         }
         return producao;
     }

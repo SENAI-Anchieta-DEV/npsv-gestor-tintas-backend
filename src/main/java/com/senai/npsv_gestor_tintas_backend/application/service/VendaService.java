@@ -6,10 +6,7 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Venda;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueInsuficienteException;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.RegraNegocioException;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.VendaBloqueadaException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.*;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.VendaRepository;
@@ -72,11 +69,9 @@ public class VendaService {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada com o ID informado."));
 
         if (venda.getStatus() != StatusVenda.ABERTA) {
-            throw new VendaBloqueadaException("Apenas vendas abertas podem ser concluídas.");
-        }
-
-        if (dto.itens() == null || dto.itens().isEmpty()) {
-            throw new RegraNegocioException("Não é possível concluir uma venda sem itens.", "RN04");
+            throw new TransicaoDeStatusInvalidaException(
+                    "Apenas vendas abertas podem ser concluídas. Status atual: " + venda.getStatus()
+            );
         }
 
         BigDecimal valorTotal = BigDecimal.ZERO;

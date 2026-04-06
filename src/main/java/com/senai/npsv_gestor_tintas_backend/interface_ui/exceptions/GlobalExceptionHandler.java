@@ -29,22 +29,11 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(VendaBloqueadaException.class)
-    public ProblemDetail handleVendaBloqueada(VendaBloqueadaException ex, HttpServletRequest request) {
-        return ProblemDetailUtils.criarProblemDetail(
-                HttpStatus.UNPROCESSABLE_ENTITY,
-                "Violação de Regra de Negócio: Venda",
-                ex.getMessage(),
-                request.getRequestURI(),
-                ex.getCodigoRegraNegocio()
-        );
-    }
-
     @ExceptionHandler(MargemErroPesagemException.class)
     public ProblemDetail handleMargemErroPesagem(MargemErroPesagemException ex, HttpServletRequest request) {
         return ProblemDetailUtils.criarProblemDetail(
                 HttpStatus.UNPROCESSABLE_ENTITY,
-                "Violação de Regra de Negócio: Pesagem",
+                "Margem de Erro na Pesagem",
                 ex.getMessage(),
                 request.getRequestURI(),
                 ex.getCodigoRegraNegocio()

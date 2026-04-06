@@ -81,6 +81,6 @@ public class FormulaService {
     }
 
     private Formula buscarFormulaPorId(String id) {
-        return formulaRepository.findById(id).orElseThrow(() -> new RuntimeException("Fórmula técnica não encontrada."));
+        return formulaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Fórmula técnica não encontrada."));
     }
 }
