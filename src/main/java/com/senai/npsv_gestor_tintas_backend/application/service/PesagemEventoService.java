@@ -5,6 +5,8 @@ import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoRespons
 import com.senai.npsv_gestor_tintas_backend.domain.entity.PesagemEvento;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.TransicaoDeStatusInvalidaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.PesagemEventoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +29,16 @@ public class PesagemEventoService {
     public PesagemEventoResponseDTO registrarPesagemEvento(PesagemEventoRequestDTO dto) {
         PesagemEvento evento = dto.toEntity();
         Producao producao = producaoRepository.findById(dto.producaoId())
-                .orElseThrow(() -> new RuntimeException("Ordem de Produção não encontrada. A balança perdeu a referência."));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Produção não encontrada. A balança perdeu a referência."));
 
         if (producao.getStatus() == StatusProducao.PENDENTE) {
             producao.setStatus(StatusProducao.PROCESSANDO);
             log.info("Produção {} iniciada fisicamente. Status alterado para PROCESSANDO.", producao.getId());
+        }
+        if (producao.getStatus() != StatusProducao.PROCESSANDO) {
+            throw new TransicaoDeStatusInvalidaException(
+                    "Não é possível registrar pesagem para uma produção que não está em status PENDENTE ou PROCESSANDO."
+            );
         }
 
         evento.setProducao(producao);

@@ -5,10 +5,10 @@ import lombok.Getter;
 @Getter
 public class RegraNegocioException extends RuntimeException {
 
-    private final String codigoErro;
+    private final String codigoRegraNegocio;
 
-    public RegraNegocioException(String message, String codigoErro) {
+    public RegraNegocioException(String message, String codigoRegraNegocio) {
         super(message);
-        this.codigoErro = codigoErro;
+        this.codigoRegraNegocio = codigoRegraNegocio;
     }
 }

@@ -6,12 +6,8 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueBaixoException;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.RegraNegocioException;
-import com.senai.npsv_gestor_tintas_backend.domain.repository.FormulaRepository;
-import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
-import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
-import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.*;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,15 +26,16 @@ public class ProducaoService {
     private final ProdutoRepository produtoRepository;
     private final UsuarioRepository usuarioRepository;
     private final FormulaRepository formulaRepository;
+    private final PesagemEventoRepository pesagemEventoRepository;
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public ProducaoResponseDTO iniciarProducao(ProducaoRequestDTO dto) {
         Producao producao = dto.toEntity();
         producao.setColorista(usuarioRepository.findByIdAndAtivoTrue(dto.coloristaId())
-                .orElseThrow(() -> new RuntimeException("Colorista não encontrado ou inativo.")));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Colorista não encontrado ou inativo.")));
         producao.setFormula(formulaRepository.findById(dto.formulaId())
-                .orElseThrow(() -> new RuntimeException("Fórmula não encontrada no sistema.")));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Fórmula não encontrada no sistema.")));
 
         producao.setDataHora(LocalDateTime.now());
         producao.setStatus(StatusProducao.PENDENTE);
@@ -65,9 +62,8 @@ public class ProducaoService {
         Producao producao = buscarProducaoPorId(id);
 
         if (producao.getStatus() != StatusProducao.PENDENTE) {
-            throw new RegraNegocioException(
-                    "Apenas ordens PENDENTES podem ser canceladas. Se a mistura já foi iniciada, utilize o registro de PERDA TOTAL.",
-                    null
+            throw new TransicaoDeStatusInvalidaException(
+                    "Apenas ordens PENDENTES podem ser canceladas. Se a mistura já foi iniciada, utilize o registro de PERDA TOTAL."
             );
         }
 
@@ -78,11 +74,7 @@ public class ProducaoService {
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public ProducaoResponseDTO registrarPerdaTotal(String id) {
-        Producao producao = buscarProducaoPorId(id);
-
-        if (producao.getStatus() == StatusProducao.CONCLUIDO || producao.getStatus() == StatusProducao.CANCELADO) {
-            throw new RegraNegocioException("Não é possível registrar perda para uma ordem já concluída ou cancelada.", null);
-        }
+        Producao producao = validarProducao(id);
 
         producao.setStatus(StatusProducao.PERDA_TOTAL);
         Producao producaoSalva = producaoRepository.save(producao);
@@ -95,11 +87,7 @@ public class ProducaoService {
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public ProducaoResponseDTO concluirProducao(String id) {
-        Producao producao = buscarProducaoPorId(id);
-
-        if (producao.getStatus() == StatusProducao.CONCLUIDO) {
-            throw new RuntimeException("Esta ordem de produção já foi finalizada anteriormente.");
-        }
+        Producao producao = validarProducao(id);
 
         producao.setStatus(StatusProducao.CONCLUIDO);
         Producao producaoSalva = producaoRepository.save(producao);
@@ -121,15 +109,33 @@ public class ProducaoService {
             boolean possuiEstoqueSuficiente = linhasAfetadas > 0;
 
             if (!possuiEstoqueSuficiente) {
-                throw new EstoqueBaixoException(String.format(
-                        "Estoque insuficiente para o insumo '%s'. Necessário: %s",
-                        insumo.getDescricao(), qtdNecessaria));
+                throw new EstoqueInsuficienteException(String.format(
+                        "Estoque insuficiente para o insumo '%s'.",
+                        insumo.getDescricao()),
+                        "RN02 – Baixa de Estoque");
             }
         }
         log.info("--- FIM DA BAIXA DE ESTOQUE ---");
     }
 
+    private Producao validarProducao(String id) {
+        Producao producao = buscarProducaoPorId(id);
+
+        if (producao.getStatus() != StatusProducao.PENDENTE && producao.getStatus() != StatusProducao.PROCESSANDO) {
+            throw new TransicaoDeStatusInvalidaException(
+                    "Não é possível concluir uma produção que está no status: " + producao.getStatus()
+            );
+        }
+
+        if (!pesagemEventoRepository.existsByProducaoId(producao.getId())) {
+            throw new ProducaoSemPesagemException(
+                    "A produção não pode ser concluída pois não possui nenhum evento de pesagem registrado."
+            );
+        }
+        return producao;
+    }
+
     private Producao buscarProducaoPorId(String id) {
-        return producaoRepository.findById(id).orElseThrow(() -> new RuntimeException("Ordem de produção não encontrada."));
+        return producaoRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Ordem de produção não encontrada."));
     }
 }

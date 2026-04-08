@@ -10,18 +10,16 @@ public class ProblemDetailUtils {
 
     private static URI resolveType(HttpStatus status) {
         String baseUrl = "https://gestortintas.com/errors/";
-        String path;
-        if (status == HttpStatus.BAD_REQUEST) {
-            path = "requisicao-invalida";
-        } else if (status == HttpStatus.UNAUTHORIZED) {
-            path = "nao-autenticado";
-        } else if (status == HttpStatus.NOT_FOUND) {
-            path = "nao-encontrado";
-        } else if (status == HttpStatus.CONFLICT) {
-            path = "conflito";
-        } else {
-            path = "regra-de-negocio";
-        }
+        String path = switch (status) {
+            case BAD_REQUEST -> "requisicao-invalida";
+            case UNAUTHORIZED -> "nao-autenticado";
+            case NOT_FOUND -> "nao-encontrado";
+            case CONFLICT -> "conflito";
+            case INTERNAL_SERVER_ERROR -> "erro-interno";
+            case FORBIDDEN -> "proibido";
+            case UNPROCESSABLE_ENTITY -> "entidade-nao-processavel";
+            default -> "generico";
+        };
         return URI.create(baseUrl + path);
     }
 
@@ -30,7 +28,7 @@ public class ProblemDetailUtils {
             String title,
             String detail,
             String instance,
-            String codigoErro) {
+            String codigoRegraNegocio) {
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, detail);
 
@@ -41,8 +39,8 @@ public class ProblemDetailUtils {
         problemDetail.setProperty("timestamp", Instant.now());
 
 
-        if (codigoErro != null && !codigoErro.isBlank()) {
-            problemDetail.setProperty("codigoErro", codigoErro);
+        if (codigoRegraNegocio != null && !codigoRegraNegocio.isBlank()) {
+            problemDetail.setProperty("codigoRegraNegocio", codigoRegraNegocio);
         }
 
         return problemDetail;
