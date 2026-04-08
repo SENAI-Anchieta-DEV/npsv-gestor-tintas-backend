@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public interface ProdutoRepository extends JpaRepository<Produto, String> {
 
@@ -18,4 +19,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, String> {
             "WHERE p.id = :produtoId AND p.quantidadeEstoque >= :quantidade")
     int darBaixaEstoque(@Param("produtoId") String produtoId,
                         @Param("quantidade") BigDecimal quantidade);
+
+    Optional<Produto> findByCodigoBarras(String codigoBarras);
 }
