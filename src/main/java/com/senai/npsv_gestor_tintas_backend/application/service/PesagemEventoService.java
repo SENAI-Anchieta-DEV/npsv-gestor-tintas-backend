@@ -34,7 +34,8 @@ public class PesagemEventoService {
         if (producao.getStatus() == StatusProducao.PENDENTE) {
             producao.setStatus(StatusProducao.PROCESSANDO);
             log.info("Produção {} iniciada fisicamente. Status alterado para PROCESSANDO.", producao.getId());
-        } else if (producao.getStatus() != StatusProducao.PROCESSANDO) {
+        }
+        if (producao.getStatus() != StatusProducao.PROCESSANDO) {
             throw new TransicaoDeStatusInvalidaException(
                     "Não é possível registrar pesagem para uma produção que não está em status PENDENTE ou PROCESSANDO."
             );
