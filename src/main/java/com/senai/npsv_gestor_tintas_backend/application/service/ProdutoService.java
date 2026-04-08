@@ -4,6 +4,7 @@ import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.CategoriaProduto;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.CodigoJaExisteException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.CategoriaProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
@@ -23,6 +24,8 @@ public class ProdutoService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public ProdutoResponseDTO registrarProduto(ProdutoRequestDTO dto) {
+        validarCodigoBarrasUnico(dto.codigoBarras(), null);
+
         Produto produto = dto.toEntity();
         produto.setCategoria(buscarCategoriaProdutoPorId(dto.categoriaId()));
         return ProdutoResponseDTO.fromEntity(produtoRepository.save(produto));
@@ -42,6 +45,8 @@ public class ProdutoService {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public ProdutoResponseDTO atualizarProduto(String id, ProdutoRequestDTO dto) {
+        validarCodigoBarrasUnico(dto.codigoBarras(), id);
+
         Produto produto = buscarProdutoPorId(id);
         produto.setDescricao(dto.descricao());
         produto.setPrecoCusto(dto.precoCusto());
@@ -58,6 +63,14 @@ public class ProdutoService {
     public void deletarProduto(String id) {
         Produto produto = buscarProdutoPorId(id);
         produtoRepository.delete(produto);
+    }
+
+    private void validarCodigoBarrasUnico(String codigoBarras, String produtoIdAtual) {
+        produtoRepository.findByCodigoBarras(codigoBarras).ifPresent(produtoExistente -> {
+            if (!produtoExistente.getId().equals(produtoIdAtual)) {
+                throw new CodigoJaExisteException("Já existe um produto cadastrado com o código de barras: " + codigoBarras);
+            }
+        });
     }
 
     private Produto buscarProdutoPorId(String id) {

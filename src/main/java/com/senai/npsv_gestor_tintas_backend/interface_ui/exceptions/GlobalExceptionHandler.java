@@ -96,6 +96,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(CodigoJaExisteException.class)
+    public ProblemDetail handleCodigoJaExiste(CodigoJaExisteException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "Código já existente",
+                ex.getMessage(),
+                request.getRequestURI(),
+                "RN04 – Unicidade de Código"
+        );
+    }
+
 
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ProblemDetail handleCredenciaisInvalidas(CredenciaisInvalidasException ex, HttpServletRequest request) {

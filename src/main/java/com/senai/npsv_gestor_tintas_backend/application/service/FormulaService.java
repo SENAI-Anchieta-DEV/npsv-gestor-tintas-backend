@@ -6,6 +6,7 @@ import com.senai.npsv_gestor_tintas_backend.application.dto.ItemFormulaRequestDT
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Formula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.CodigoJaExisteException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.FormulaRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
@@ -26,6 +27,8 @@ public class FormulaService {
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public FormulaResponseDTO registrarFormula(FormulaRequestDTO dto) {
+        validarCodigoInternoUnico(dto.codigoInterno(), null);
+
         Formula formula = dto.toEntity();
 
         adicionarItensNaFormula(formula, dto.itens());
@@ -47,6 +50,8 @@ public class FormulaService {
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA')")
     public FormulaResponseDTO atualizarFormula(String id, FormulaRequestDTO dto) {
+        validarCodigoInternoUnico(dto.codigoInterno(), id);
+
         Formula formula = buscarFormulaPorId(id);
 
         formula.setCodigoInterno(dto.codigoInterno());
@@ -78,6 +83,14 @@ public class FormulaService {
 
             formula.getItens().add(novoItem);
         }
+    }
+
+    private void validarCodigoInternoUnico(String codigoInterno, String formulaIdAtual) {
+        formulaRepository.findByCodigoInterno(codigoInterno).ifPresent(formulaExistente -> {
+            if (!formulaExistente.getId().equals(formulaIdAtual)) {
+                throw new CodigoJaExisteException("Já existe uma fórmula cadastrada com o código interno: " + codigoInterno);
+            }
+        });
     }
 
     private Formula buscarFormulaPorId(String id) {
