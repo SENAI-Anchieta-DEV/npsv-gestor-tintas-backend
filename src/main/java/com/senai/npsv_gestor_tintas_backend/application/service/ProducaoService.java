@@ -6,8 +6,15 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.*;
-import com.senai.npsv_gestor_tintas_backend.domain.repository.*;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueInsuficienteException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.ProducaoSemPesagemException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.TransicaoDeStatusInvalidaException;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.FormulaRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.PesagemEventoRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.ProducaoRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -123,13 +130,13 @@ public class ProducaoService {
 
         if (producao.getStatus() != StatusProducao.PENDENTE && producao.getStatus() != StatusProducao.PROCESSANDO) {
             throw new TransicaoDeStatusInvalidaException(
-                    "Não é possível concluir uma produção que está no status: " + producao.getStatus()
+                    "Não é possível finalizar uma produção que está no status: " + producao.getStatus()
             );
         }
 
         if (!pesagemEventoRepository.existsByProducaoId(producao.getId())) {
             throw new ProducaoSemPesagemException(
-                    "A produção não pode ser concluída pois não possui nenhum evento de pesagem registrado."
+                    "A produção não pode ser finalizada pois não possui nenhum evento de pesagem registrado."
             );
         }
         return producao;
