@@ -10,7 +10,7 @@ RUN ./mvnw dependency:go-offline -B
 
 COPY src ./src
 
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package -DskipTests -Dfile.encoding=UTF-8
 
 
 FROM eclipse-temurin:21-jre-alpine
