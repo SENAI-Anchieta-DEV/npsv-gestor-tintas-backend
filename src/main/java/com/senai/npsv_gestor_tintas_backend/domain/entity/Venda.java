@@ -44,6 +44,7 @@ public class Venda {
     @JoinColumn(name = "vendedor_id")
     private Usuario vendedor;
 
+    @Builder.Default
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itens = new ArrayList<>();
 }

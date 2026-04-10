@@ -32,6 +32,7 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean ativo = true;
 

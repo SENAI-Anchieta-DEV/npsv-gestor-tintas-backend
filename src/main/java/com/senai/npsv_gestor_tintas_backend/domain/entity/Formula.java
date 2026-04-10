@@ -39,6 +39,7 @@ public class Formula {
     @Column(nullable = false)
     private LocalDateTime dataAtualizacao;
 
+    @Builder.Default
     @OneToMany(mappedBy = "formula", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemFormula> itens = new ArrayList<>();
 }
