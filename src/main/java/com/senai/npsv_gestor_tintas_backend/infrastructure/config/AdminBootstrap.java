@@ -24,6 +24,10 @@ public class AdminBootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        if (adminEmail == null || adminEmail.isBlank() || adminSenha == null || adminSenha.isBlank()) {
+            System.out.println("⚠️ Variáveis de Admin não configuradas. Ignorando a criação do Administrador Provisório.");
+            return;
+        }
         usuarioRepository.findByEmail(adminEmail).ifPresentOrElse(
                 admin -> {
                     if (!admin.isAtivo()) {
