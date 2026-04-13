@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/formulas")
-@CrossOrigin(origins = "http://localhost:1234", originPatterns = "http://localhost:56135")
 @RequiredArgsConstructor
 public class FormulaController {
     private final FormulaService service;
