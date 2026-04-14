@@ -43,4 +43,10 @@ public class VendaController {
             @Valid @RequestBody ConcluirVendaRequestDTO dto) {
         return ResponseEntity.ok(vendaService.concluirVenda(id, dto));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarVenda(@PathVariable String id) {
+        vendaService.deletarVenda(id);
+        return ResponseEntity.noContent().build();
+    }
 }
