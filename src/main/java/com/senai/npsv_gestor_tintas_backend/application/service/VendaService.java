@@ -70,8 +70,7 @@ public class VendaService {
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO concluirVenda(String vendaId, ConcluirVendaRequestDTO dto) {
-        Venda venda = vendaRepository.findById(vendaId)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada com o ID informado."));
+        Venda venda = buscarVendaPorId(vendaId);
 
         if (venda.getStatus() != StatusVenda.ABERTA) {
             throw new TransicaoDeStatusInvalidaException(
@@ -111,5 +110,23 @@ public class VendaService {
         venda.setStatus(StatusVenda.CONCLUIDA);
 
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
+    public void deletarVenda(String id) {
+        Venda venda = buscarVendaPorId(id);
+
+        if (venda.getStatus() == StatusVenda.CONCLUIDA) {
+            throw new TransicaoDeStatusInvalidaException(
+                    "Não é possível deletar uma venda que já foi concluída."
+            );
+        }
+
+        vendaRepository.delete(venda);
+    }
+
+    private Venda buscarVendaPorId(String id) {
+        return vendaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada."));
     }
 }
