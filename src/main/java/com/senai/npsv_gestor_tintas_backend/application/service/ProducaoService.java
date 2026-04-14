@@ -50,6 +50,7 @@ public class ProducaoService {
         return ProducaoResponseDTO.fromEntity(producaoRepository.save(producao));
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<ProducaoResponseDTO> listarProducoesAtivas() {
         return producaoRepository.findAll().stream()
@@ -57,6 +58,7 @@ public class ProducaoService {
                 .map(ProducaoResponseDTO::fromEntity).toList();
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public ProducaoResponseDTO listarProducaoPorId(String id) {
         Producao producao = buscarProducaoPorId(id);

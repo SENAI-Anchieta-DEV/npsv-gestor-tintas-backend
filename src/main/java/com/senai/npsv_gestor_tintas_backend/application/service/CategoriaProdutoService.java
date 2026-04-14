@@ -24,11 +24,13 @@ public class CategoriaProdutoService {
         return CategoriaProdutoResponseDTO.fromEntity(categoria);
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<CategoriaProdutoResponseDTO> listarCategoriasProdutos() {
         return repository.findAll().stream().map(CategoriaProdutoResponseDTO::fromEntity).toList();
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public CategoriaProdutoResponseDTO listarCategoriaProdutoPorId(String id) {
         CategoriaProduto categoria = buscarCategoriaProdutoPorId(id);

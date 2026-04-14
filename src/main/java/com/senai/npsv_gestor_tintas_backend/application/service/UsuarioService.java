@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class UsuarioService {
         return new UsuarioResponseDTO(repository.save(novoUsuario));
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasRole('ADMIN')")
     public List<UsuarioResponseDTO> listarUsuariosAtivos() {
         return repository.findAllByAtivoTrue().stream()
@@ -39,12 +41,14 @@ public class UsuarioService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO listarUsuarioPorEmail(String email) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         return new UsuarioResponseDTO(usuario);
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO listarUsuarioPorId(String id) {
         var usuario = buscarUsuarioAtivoPorId(id);
@@ -61,6 +65,7 @@ public class UsuarioService {
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO atualizarSenhaUsuario(String email, String novaSenha) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
@@ -68,6 +73,7 @@ public class UsuarioService {
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public void deletarUsuario(String email) {
         var usuario = buscarUsuarioAtivoPorEmail(email);

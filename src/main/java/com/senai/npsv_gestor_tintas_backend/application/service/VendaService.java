@@ -43,6 +43,7 @@ public class VendaService {
         return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public List<VendaResponseDTO> listarVendas() {
         return vendaRepository.findAll().stream()
@@ -50,6 +51,7 @@ public class VendaService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO listarVendaPorId(String id) {
         return vendaRepository.findById(id)
@@ -57,6 +59,7 @@ public class VendaService {
                 .orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada."));
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public List<VendaResponseDTO> listarVendasPorVendedor(String vendedorId) {
         return vendaRepository.findByVendedorId(vendedorId).stream()

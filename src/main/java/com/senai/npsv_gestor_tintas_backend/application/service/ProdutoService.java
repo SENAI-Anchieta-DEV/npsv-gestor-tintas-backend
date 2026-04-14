@@ -31,11 +31,13 @@ public class ProdutoService {
         return ProdutoResponseDTO.fromEntity(produtoRepository.save(produto));
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COLORISTA')")
     public List<ProdutoResponseDTO> listarProdutos() {
         return produtoRepository.findAll().stream().map(ProdutoResponseDTO::fromEntity).toList();
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COLORISTA')")
     public ProdutoResponseDTO listarProdutoPorId(String id) {
         Produto produto = buscarProdutoPorId(id);

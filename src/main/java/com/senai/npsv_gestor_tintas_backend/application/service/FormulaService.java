@@ -36,11 +36,13 @@ public class FormulaService {
         return FormulaResponseDTO.fromEntity(formulaRepository.saveAndFlush(formula));
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public List<FormulaResponseDTO> listarFormulas() {
         return formulaRepository.findAll().stream().map(FormulaResponseDTO::fromEntity).toList();
     }
 
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'COLORISTA', 'VENDEDOR')")
     public FormulaResponseDTO listarFormulaPorId(String id) {
         Formula formula = buscarFormulaPorId(id);
