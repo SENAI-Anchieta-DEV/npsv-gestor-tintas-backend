@@ -54,9 +54,8 @@ public class VendaService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO listarVendaPorId(String id) {
-        return vendaRepository.findById(id)
-                .map(VendaResponseDTO::fromEntity)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada."));
+        Venda venda = buscarVendaPorId(id);
+        return VendaResponseDTO.fromEntity(venda);
     }
 
     @Transactional(readOnly = true)
@@ -124,6 +123,25 @@ public class VendaService {
         }
 
         vendaRepository.delete(venda);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
+    public VendaResponseDTO estornarVenda(String vendaId) {
+        Venda venda = buscarVendaPorId(vendaId);
+
+        if (venda.getStatus() != StatusVenda.CONCLUIDA) {
+            throw new TransicaoDeStatusInvalidaException("Apenas vendas concluídas podem ser estornadas.");
+        }
+
+        for (ItemVenda item : venda.getItens()) {
+            Produto produto = item.getProduto();
+            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().add(item.getQuantidade()));
+            produtoRepository.save(produto);
+        }
+
+        venda.setStatus(StatusVenda.CANCELADA);
+        return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
     }
 
     private Venda buscarVendaPorId(String id) {
