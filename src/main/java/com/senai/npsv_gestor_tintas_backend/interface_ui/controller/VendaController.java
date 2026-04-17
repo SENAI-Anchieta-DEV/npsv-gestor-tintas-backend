@@ -49,4 +49,9 @@ public class VendaController {
         vendaService.deletarVenda(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("{id}/estornar")
+    public ResponseEntity<VendaResponseDTO> estornarVenda(@PathVariable String id) {
+        return ResponseEntity.ok(vendaService.estornarVenda(id));
+    }
 }
