@@ -21,4 +21,11 @@ public interface ProdutoRepository extends JpaRepository<Produto, String> {
                         @Param("quantidade") BigDecimal quantidade);
 
     Optional<Produto> findByCodigoBarras(String codigoBarras);
+
+    @Modifying(flushAutomatically = true)
+    @Query("UPDATE Produto p " +
+            "SET p.quantidadeEstoque = p.quantidadeEstoque + :quantidade " +
+            "WHERE p.id = :produtoId")
+    void estornarEstoque(@Param("produtoId") String produtoId,
+                        @Param("quantidade") BigDecimal quantidade);
 }

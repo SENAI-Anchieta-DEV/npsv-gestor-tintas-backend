@@ -50,7 +50,7 @@ public class VendaController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("{id}/estornar")
+    @PatchMapping("/{id}/estornar")
     public ResponseEntity<VendaResponseDTO> estornarVenda(@PathVariable String id) {
         return ResponseEntity.ok(vendaService.estornarVenda(id));
     }

@@ -135,9 +135,7 @@ public class VendaService {
         }
 
         for (ItemVenda item : venda.getItens()) {
-            Produto produto = item.getProduto();
-            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque().add(item.getQuantidade()));
-            produtoRepository.save(produto);
+            produtoRepository.estornarEstoque(item.getProduto().getId(), item.getQuantidade());
         }
 
         venda.setStatus(StatusVenda.CANCELADA);
