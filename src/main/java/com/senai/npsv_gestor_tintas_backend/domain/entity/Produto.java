@@ -31,7 +31,7 @@ public class Produto {
     private String descricao;
 
     @NotNull
-    @DecimalMin(value = "0.0", inclusive = true)
+    @DecimalMin(value = "0.0")
     @Column(nullable = false)
     private BigDecimal quantidadeEstoque;
 
@@ -46,6 +46,14 @@ public class Produto {
     private BigDecimal precoVenda;
 
     @NotNull
+    @DecimalMin(value = "0.0")
+    @Column(nullable = false)
+    private BigDecimal estoqueMinimo;
+
+    @Column(nullable = false)
+    private boolean estoqueEmAlerta = false;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UnidadeMedida unidadeMedida;
@@ -53,4 +61,10 @@ public class Produto {
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private CategoriaProduto categoria;
+
+    public void atualizarStatusAlerta() {
+        if (this.quantidadeEstoque != null && this.estoqueMinimo != null) {
+            this.estoqueEmAlerta = this.quantidadeEstoque.compareTo(this.estoqueMinimo) <= 0;
+        }
+    }
 }

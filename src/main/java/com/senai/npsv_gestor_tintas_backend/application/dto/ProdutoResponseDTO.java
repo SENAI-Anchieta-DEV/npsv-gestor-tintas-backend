@@ -12,7 +12,9 @@ public record ProdutoResponseDTO(
         BigDecimal precoCusto,
         BigDecimal precoVenda,
         UnidadeMedida unidadeMedida,
-        CategoriaProdutoResponseDTO categoria
+        CategoriaProdutoResponseDTO categoria,
+        BigDecimal estoqueMinimo,
+        boolean estoqueEmAlerta
 ) {
     public static ProdutoResponseDTO fromEntity(Produto produto) {
         if (produto == null) return null;
@@ -24,7 +26,9 @@ public record ProdutoResponseDTO(
                 produto.getPrecoCusto(),
                 produto.getPrecoVenda(),
                 produto.getUnidadeMedida(),
-                CategoriaProdutoResponseDTO.fromEntity(produto.getCategoria())
+                CategoriaProdutoResponseDTO.fromEntity(produto.getCategoria()),
+                produto.getEstoqueMinimo(),
+                produto.isEstoqueEmAlerta()
         );
     }
 }
