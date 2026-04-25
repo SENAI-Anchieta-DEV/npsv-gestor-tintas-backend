@@ -39,6 +39,14 @@ public class ProdutoService {
 
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COLORISTA')")
+    public List<ProdutoResponseDTO> listarProdutosEmAlerta() {
+        return produtoRepository.findByEstoqueEmAlertaTrue().stream()
+                .map(ProdutoResponseDTO::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COLORISTA')")
     public ProdutoResponseDTO listarProdutoPorId(String id) {
         Produto produto = buscarProdutoPorId(id);
         return ProdutoResponseDTO.fromEntity(produto);

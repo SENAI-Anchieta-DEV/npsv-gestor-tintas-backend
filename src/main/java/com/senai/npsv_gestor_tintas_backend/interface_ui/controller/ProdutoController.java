@@ -28,6 +28,11 @@ public class ProdutoController {
     @GetMapping
     public ResponseEntity<List<ProdutoResponseDTO>> listarProdutos() { return ResponseEntity.ok(service.listarProdutos()); }
 
+    @GetMapping("/alertas")
+    public ResponseEntity<List<ProdutoResponseDTO>> listarProdutosEmAlerta() {
+        return ResponseEntity.ok(service.listarProdutosEmAlerta());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> listarProdutoPorId(@PathVariable String id) { return ResponseEntity.ok(service.listarProdutoPorId(id)); }
 
