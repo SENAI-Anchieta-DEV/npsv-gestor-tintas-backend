@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
+import com.senai.npsv_gestor_tintas_backend.application.dto.AlertaEstoqueResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.CategoriaProduto;
@@ -39,6 +40,14 @@ public class ProdutoService {
 
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COLORISTA')")
+    public List<AlertaEstoqueResponseDTO> listarProdutosEmAlerta() {
+        return produtoRepository.findByEstoqueEmAlertaTrue().stream()
+                .map(AlertaEstoqueResponseDTO::fromEntity)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COLORISTA')")
     public ProdutoResponseDTO listarProdutoPorId(String id) {
         Produto produto = buscarProdutoPorId(id);
         return ProdutoResponseDTO.fromEntity(produto);
@@ -56,6 +65,10 @@ public class ProdutoService {
         produto.setQuantidadeEstoque(dto.quantidadeEstoque());
         produto.setUnidadeMedida(dto.unidadeMedida());
         produto.setCategoria(buscarCategoriaProdutoPorId(dto.categoriaId()));
+        produto.setQuantidadeEstoque(dto.quantidadeEstoque());
+        produto.setEstoqueMinimo(dto.estoqueMinimo());
+
+        produto.atualizarStatusAlerta();
 
         return ProdutoResponseDTO.fromEntity(produtoRepository.save(produto));
     }

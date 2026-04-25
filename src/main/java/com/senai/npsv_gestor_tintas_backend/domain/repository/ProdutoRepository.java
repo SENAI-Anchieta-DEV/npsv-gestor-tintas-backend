@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 public interface ProdutoRepository extends JpaRepository<Produto, String> {
@@ -15,7 +16,8 @@ public interface ProdutoRepository extends JpaRepository<Produto, String> {
     // Retorna o número de linhas afetadas: 1 (Sucesso) ou 0 (Falha por falta de estoque).
     @Modifying(flushAutomatically = true)
     @Query("UPDATE Produto p " +
-            "SET p.quantidadeEstoque = p.quantidadeEstoque - :quantidade " +
+            "SET p.quantidadeEstoque = p.quantidadeEstoque - :quantidade, " +
+            "    p.estoqueEmAlerta = CASE WHEN (p.quantidadeEstoque - :quantidade) <= p.estoqueMinimo THEN true ELSE false END " +
             "WHERE p.id = :produtoId AND p.quantidadeEstoque >= :quantidade")
     int darBaixaEstoque(@Param("produtoId") String produtoId,
                         @Param("quantidade") BigDecimal quantidade);
@@ -24,8 +26,11 @@ public interface ProdutoRepository extends JpaRepository<Produto, String> {
 
     @Modifying(flushAutomatically = true)
     @Query("UPDATE Produto p " +
-            "SET p.quantidadeEstoque = p.quantidadeEstoque + :quantidade " +
+            "SET p.quantidadeEstoque = p.quantidadeEstoque + :quantidade, " +
+            "    p.estoqueEmAlerta = CASE WHEN (p.quantidadeEstoque + :quantidade) <= p.estoqueMinimo THEN true ELSE false END " +
             "WHERE p.id = :produtoId")
     void estornarEstoque(@Param("produtoId") String produtoId,
                         @Param("quantidade") BigDecimal quantidade);
+
+    List<Produto> findByEstoqueEmAlertaTrue();
 }

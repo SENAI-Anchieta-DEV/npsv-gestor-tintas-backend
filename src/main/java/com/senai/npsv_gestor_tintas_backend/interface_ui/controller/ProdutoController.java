@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
+import com.senai.npsv_gestor_tintas_backend.application.dto.AlertaEstoqueResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.ProdutoService;
@@ -27,6 +28,11 @@ public class ProdutoController {
 
     @GetMapping
     public ResponseEntity<List<ProdutoResponseDTO>> listarProdutos() { return ResponseEntity.ok(service.listarProdutos()); }
+
+    @GetMapping("/alertas")
+    public ResponseEntity<List<AlertaEstoqueResponseDTO>> listarProdutosEmAlerta() {
+        return ResponseEntity.ok(service.listarProdutosEmAlerta());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> listarProdutoPorId(@PathVariable String id) { return ResponseEntity.ok(service.listarProdutoPorId(id)); }

@@ -9,6 +9,7 @@ public record VendaResponseDTO(
         String id,
         LocalDateTime dataAbertura,
         BigDecimal valorTotal,
+        String status,
         String nomeVendedor,
         List<ItemVendaResponseDTO> itens
 ) {
@@ -22,6 +23,7 @@ public record VendaResponseDTO(
                 venda.getId(),
                 venda.getDataAbertura(),
                 venda.getValorTotal(),
+                venda.getStatus().name(),
                 venda.getVendedor() != null ? venda.getVendedor().getNome() : "Desconhecido",
                 itensDto
         );
