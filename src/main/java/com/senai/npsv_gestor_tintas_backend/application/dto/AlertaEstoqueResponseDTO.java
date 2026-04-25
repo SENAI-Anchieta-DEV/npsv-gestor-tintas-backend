@@ -11,6 +11,7 @@ public record AlertaEstoqueResponseDTO(
         BigDecimal estoqueMinimo
 ) {
     public static AlertaEstoqueResponseDTO fromEntity(Produto produto) {
+        if (produto == null) return null;
         return new AlertaEstoqueResponseDTO(
                 produto.getId(),
                 produto.getDescricao(),

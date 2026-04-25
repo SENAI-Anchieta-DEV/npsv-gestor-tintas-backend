@@ -47,7 +47,7 @@ public record ProdutoRequestDTO(
                 .unidadeMedida(this.unidadeMedida)
                 .categoria(CategoriaProduto.builder().id(this.categoriaId).build())
                 .estoqueMinimo(this.estoqueMinimo)
-                .estoqueEmAlerta(false)
+                .estoqueEmAlerta(this.quantidadeEstoque.compareTo(this.estoqueMinimo) <= 0)
                 .build();
     }
 }

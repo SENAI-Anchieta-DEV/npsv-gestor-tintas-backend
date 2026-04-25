@@ -1,6 +1,8 @@
 package com.senai.npsv_gestor_tintas_backend.application.dto;
 
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Venda;
+import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +11,7 @@ public record VendaResponseDTO(
         String id,
         LocalDateTime dataAbertura,
         BigDecimal valorTotal,
-        String status,
+        StatusVenda status,
         String nomeVendedor,
         List<ItemVendaResponseDTO> itens
 ) {
@@ -23,7 +25,7 @@ public record VendaResponseDTO(
                 venda.getId(),
                 venda.getDataAbertura(),
                 venda.getValorTotal(),
-                venda.getStatus().name(),
+                venda.getStatus(),
                 venda.getVendedor() != null ? venda.getVendedor().getNome() : "Desconhecido",
                 itensDto
         );
