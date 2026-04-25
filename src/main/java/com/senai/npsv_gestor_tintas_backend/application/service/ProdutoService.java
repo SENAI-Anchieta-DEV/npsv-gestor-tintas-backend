@@ -65,7 +65,6 @@ public class ProdutoService {
         produto.setQuantidadeEstoque(dto.quantidadeEstoque());
         produto.setUnidadeMedida(dto.unidadeMedida());
         produto.setCategoria(buscarCategoriaProdutoPorId(dto.categoriaId()));
-        produto.setQuantidadeEstoque(dto.quantidadeEstoque());
         produto.setEstoqueMinimo(dto.estoqueMinimo());
 
         produto.atualizarStatusAlerta();
