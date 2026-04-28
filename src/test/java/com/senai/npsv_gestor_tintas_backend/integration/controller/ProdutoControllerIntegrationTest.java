@@ -1,4 +1,4 @@
-package com.senai.npsv_gestor_tintas_backend.unit.integration;
+package com.senai.npsv_gestor_tintas_backend.integration.controller;
 
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.CategoriaProduto;
@@ -52,7 +52,7 @@ public class ProdutoControllerIntegrationTest {
 
     @Test
     @DisplayName("CT-01: Integração - Deve criar produto e retornar status 201 Created")
-    void criarProduto_DeveRetornarStatus201() {
+    void criarProdutoDeveRetornarStatus201() {
         ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO();
 
         given()
@@ -70,7 +70,7 @@ public class ProdutoControllerIntegrationTest {
 
     @Test
     @DisplayName("BUG-02: Integração - Deve retornar 409 Conflict ao tentar duplicar código de barras")
-    void criarProduto_DeveRetornarStatus409_QuandoCodigoDuplicado() {
+    void criarProdutoDeveRetornarStatus409QuandoCodigoDuplicado() {
         // Arrange
         Produto produto1 = ProdutoCreator.criarProdutoValido();
         produto1.setCategoria(categoriaBase);

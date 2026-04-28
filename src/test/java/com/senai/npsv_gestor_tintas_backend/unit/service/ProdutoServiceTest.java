@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -74,5 +76,25 @@ public class ProdutoServiceTest {
         assertEquals("Já existe um produto cadastrado com o código de barras: " + requestDTO.codigoBarras(), exception.getMessage());
 
         verify(produtoRepository, never()).save(any(Produto.class));
+    }
+
+    @Test
+    @DisplayName("CT-04: Deve listar apenas os produtos em alerta convertendo para DTO")
+    void listarProdutosEmAlerta_DeveRetornarListaDeAlertas() {
+        // Arrange
+        Produto produtoEmAlerta = ProdutoCreator.criarProdutoValido();
+        produtoEmAlerta.setEstoqueEmAlerta(true);
+        produtoEmAlerta.setQuantidadeEstoque(new BigDecimal("5.0"));
+
+        when(produtoRepository.findByEstoqueEmAlertaTrue()).thenReturn(List.of(produtoEmAlerta));
+
+        // Act
+        var listaDeAlertas = produtoService.listarProdutosEmAlerta();
+
+        // Assert
+        assertNotNull(listaDeAlertas);
+        assertEquals(1, listaDeAlertas.size());
+        assertEquals("5.0", listaDeAlertas.getFirst().quantidadeEstoque().toString());
+        verify(produtoRepository, times(1)).findByEstoqueEmAlertaTrue();
     }
 }
