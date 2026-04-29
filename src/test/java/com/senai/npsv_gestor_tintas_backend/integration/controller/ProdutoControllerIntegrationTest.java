@@ -52,7 +52,7 @@ public class ProdutoControllerIntegrationTest {
 
     @Test
     @DisplayName("CT-01: Integração - Deve criar produto e retornar status 201 Created")
-    void criarProdutoDeveRetornarStatus201() {
+    void criarProduto_DeveRetornarStatus201() {
         ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO();
 
         given()
@@ -70,7 +70,7 @@ public class ProdutoControllerIntegrationTest {
 
     @Test
     @DisplayName("BUG-02: Integração - Deve retornar 409 Conflict ao tentar duplicar código de barras")
-    void criarProdutoDeveRetornarStatus409QuandoCodigoDuplicado() {
+    void criarProduto_DeveRetornarStatus409_QuandoCodigoDuplicado() {
         // Arrange
         Produto produto1 = ProdutoCreator.criarProdutoValido();
         produto1.setCategoria(categoriaBase);

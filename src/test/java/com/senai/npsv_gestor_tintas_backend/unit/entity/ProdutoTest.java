@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ProdutoTest {
     @Test
     @DisplayName("CT-04: Deve mudar alerta para TRUE quando estoque for menor ou igual ao mínimo")
-    void atualizarStatusAlertaDeveMudarParaTrueQuandoEstoqueAbaixoDoMinimo() {
+    void atualizarStatus_AlertaDeveMudarParaTrue_QuandoEstoqueAbaixoDoMinimo() {
         // Arrange
         Produto produto = ProdutoCreator.criarProdutoValido();
         produto.setQuantidadeEstoque(new BigDecimal("10.0"));
@@ -28,7 +28,7 @@ public class ProdutoTest {
 
     @Test
     @DisplayName("CT-04: Deve manter alerta como FALSE quando estoque for maior que o mínimo")
-    void atualizarStatusAlertaDeveManterFalseQuandoEstoqueAcimaDoMinimo() {
+    void atualizarStatus_AlertaDeveManterFalse_QuandoEstoqueAcimaDoMinimo() {
         // Arrange
         Produto produto = ProdutoCreator.criarProdutoValido();
         produto.setQuantidadeEstoque(new BigDecimal("50.0"));

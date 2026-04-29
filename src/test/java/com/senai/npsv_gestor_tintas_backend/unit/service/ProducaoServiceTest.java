@@ -40,7 +40,7 @@ public class ProducaoServiceTest {
 
     @Test
     @DisplayName("CT-02: Deve concluir produção e dar baixa no estoque quando houver saldo")
-    void concluirProducaoDeveRetornarProducaoConcluidaQuandoEstoqueSuficiente() {
+    void concluirProducao_DeveRetornarProducaoConcluida_QuandoEstoqueSuficiente() {
         // Arrange
         Producao producaoMock = ProducaoCreator.criarProducaoProcessando();
         String producaoId = producaoMock.getId();
@@ -64,7 +64,7 @@ public class ProducaoServiceTest {
 
     @Test
     @DisplayName("CT-03: Deve lançar exceção de estoque quando saldo for insuficiente")
-    void concluirProducaoDeveLancarExcecaoQuandoEstoqueInsuficiente() {
+    void concluirProducao_DeveLancarExcecao_QuandoEstoqueInsuficiente() {
         // Arrange
         Producao producaoMock = ProducaoCreator.criarProducaoProcessando();
         String producaoId = producaoMock.getId();

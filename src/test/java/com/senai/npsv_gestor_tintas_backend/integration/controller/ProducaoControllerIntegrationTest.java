@@ -69,7 +69,7 @@ public class ProducaoControllerIntegrationTest {
 
     @Test
     @DisplayName("CT-02: Integração - Deve concluir produção e descontar 9L do estoque (100 -> 91)")
-    void concluirProducaoDeveRetornar200EDescontarEstoque() {
+    void concluirProducao_DeveRetornar200EDescontarEstoque() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
                 .contentType(ContentType.JSON)
