@@ -4,10 +4,8 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.Role;
 
 public class UsuarioCreator {
-
-    public static Usuario criarUsuarioAdmin() {
+    public static Usuario criarUsuarioAdminNovo() {
         return Usuario.builder()
-                .id("usr-admin")
                 .nome("Administrador")
                 .email("admin@gestortintas.com")
                 .senha("senha123")
@@ -16,14 +14,25 @@ public class UsuarioCreator {
                 .build();
     }
 
-    public static Usuario criarUsuarioColorista() {
+    public static Usuario criarUsuarioColoristaNovo() {
         return Usuario.builder()
-                .id("usr-colorista")
                 .nome("Colorista")
                 .email("colorista@gestortintas.com")
                 .senha("senha123")
                 .role(Role.COLORISTA)
                 .ativo(true)
                 .build();
+    }
+
+    public static Usuario criarUsuarioAdminSalvo() {
+        Usuario admin = criarUsuarioAdminNovo();
+        admin.setId("usr-admin");
+        return admin;
+    }
+
+    public static Usuario criarUsuarioColoristaSalvo() {
+        Usuario colorista = criarUsuarioColoristaNovo();
+        colorista.setId("usr-colorista");
+        return colorista;
     }
 }

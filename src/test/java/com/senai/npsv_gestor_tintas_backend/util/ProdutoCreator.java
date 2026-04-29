@@ -8,17 +8,15 @@ import com.senai.npsv_gestor_tintas_backend.domain.enums.UnidadeMedida;
 import java.math.BigDecimal;
 
 public class ProdutoCreator {
-    public static CategoriaProduto criarCategoriaValida() {
+    public static CategoriaProduto criarCategoriaNova() {
         return CategoriaProduto.builder()
-                .id("cat-123")
                 .nome("Insumos Base")
                 .descricao("Matérias-primas para mistura")
                 .build();
     }
 
-    public static Produto criarProdutoValido() {
+    public static Produto criarProdutoNovo() {
         return Produto.builder()
-                .id("prod-123")
                 .codigoBarras("789123456")
                 .descricao("Tinta Base Branca 18L")
                 .quantidadeEstoque(new BigDecimal("100.0"))
@@ -27,8 +25,20 @@ public class ProdutoCreator {
                 .unidadeMedida(UnidadeMedida.L)
                 .estoqueMinimo(new BigDecimal("15.0"))
                 .estoqueEmAlerta(false)
-                .categoria(criarCategoriaValida())
                 .build();
+    }
+
+    public static CategoriaProduto criarCategoriaSalva() {
+        CategoriaProduto categoria = criarCategoriaNova();
+        categoria.setId("cat-123");
+        return categoria;
+    }
+
+    public static Produto criarProdutoSalvo() {
+        Produto produto = criarProdutoNovo();
+        produto.setId("prod-123");
+        produto.setCategoria(criarCategoriaSalva());
+        return produto;
     }
 
     public static ProdutoRequestDTO criarProdutoRequestDTO() {

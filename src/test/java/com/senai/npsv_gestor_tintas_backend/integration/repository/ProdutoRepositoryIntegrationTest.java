@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 
 import java.math.BigDecimal;
 
@@ -23,12 +24,15 @@ public class ProdutoRepositoryIntegrationTest {
     @Autowired
     private CategoriaProdutoRepository categoriaRepository;
 
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Test
-    @DisplayName("CT-04: Integração DB - Deve marcar estoqueEmAlerta=true ao dar baixa abaixo do mínimo")
+    @DisplayName("Deve marcar estoqueEmAlerta=true ao dar baixa abaixo do mínimo")
     void darBaixaEstoque_DeveAtualizarFlagDeAlerta_QuandoAtingirMinimo() {
         // Arrange
-        CategoriaProduto categoria = categoriaRepository.save(ProdutoCreator.criarCategoriaValida());
-        Produto produto = ProdutoCreator.criarProdutoValido();
+        CategoriaProduto categoria = categoriaRepository.save(ProdutoCreator.criarCategoriaNova());
+        Produto produto = ProdutoCreator.criarProdutoNovo();
         produto.setCategoria(categoria);
         Produto salvo = produtoRepository.save(produto);
 
@@ -38,10 +42,10 @@ public class ProdutoRepositoryIntegrationTest {
         // Assert
         assertEquals(1, linhasAfetadas, "A query deve afetar exatamente 1 linha");
 
-        produtoRepository.flush();
+        entityManager.clear();
 
         Produto produtoAtualizado = produtoRepository.findById(salvo.getId()).orElseThrow();
         assertEquals(0, new BigDecimal("9.0").compareTo(produtoAtualizado.getQuantidadeEstoque()));
-        assertTrue(produtoAtualizado.isEstoqueEmAlerta(), "O banco de dados deveria ter mudado a flag para TRUE magicamente!");
+        assertTrue(produtoAtualizado.isEstoqueEmAlerta(), "O banco de dados deveria ter mudado a flag para TRUE");
     }
 }

@@ -39,10 +39,10 @@ public class ProducaoServiceTest {
     private ProducaoService producaoService;
 
     @Test
-    @DisplayName("CT-02: Deve concluir produção e dar baixa no estoque quando houver saldo")
+    @DisplayName("Deve concluir produção e dar baixa no estoque quando houver saldo")
     void concluirProducao_DeveRetornarProducaoConcluida_QuandoEstoqueSuficiente() {
         // Arrange
-        Producao producaoMock = ProducaoCreator.criarProducaoProcessando();
+        Producao producaoMock = ProducaoCreator.criarProducaoProcessandoSalva();
         String producaoId = producaoMock.getId();
         String produtoId = producaoMock.getFormula().getItens().getFirst().getInsumo().getId();
 
@@ -50,7 +50,7 @@ public class ProducaoServiceTest {
         when(pesagemEventoRepository.existsByProducaoId(producaoId)).thenReturn(true);
         when(producaoRepository.save(any(Producao.class))).thenReturn(producaoMock);
 
-        // Simulando sucesso na query de banco (1 linha afetada)
+        // Sucesso na query de banco (1 linha afetada)
         when(produtoRepository.darBaixaEstoque(eq(produtoId), any(BigDecimal.class))).thenReturn(1);
 
         // Act
@@ -63,10 +63,10 @@ public class ProducaoServiceTest {
     }
 
     @Test
-    @DisplayName("CT-03: Deve lançar exceção de estoque quando saldo for insuficiente")
+    @DisplayName("Deve lançar exceção de estoque quando saldo for insuficiente")
     void concluirProducao_DeveLancarExcecao_QuandoEstoqueInsuficiente() {
         // Arrange
-        Producao producaoMock = ProducaoCreator.criarProducaoProcessando();
+        Producao producaoMock = ProducaoCreator.criarProducaoProcessandoSalva();
         String producaoId = producaoMock.getId();
         String produtoId = producaoMock.getFormula().getItens().getFirst().getInsumo().getId();
 

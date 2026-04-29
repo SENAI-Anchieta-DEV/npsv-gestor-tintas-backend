@@ -36,12 +36,12 @@ public class ProdutoServiceTest {
     private ProdutoService produtoService;
 
     @Test
-    @DisplayName("CT-01: Deve registrar um produto com sucesso quando os dados forem válidos")
+    @DisplayName("Deve registrar um produto com sucesso quando os dados forem válidos")
     void registrarProduto_DeveRetornarProduto_QuandoDadosValidos() {
         // Arrange
         ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO();
-        Produto produtoMock = ProdutoCreator.criarProdutoValido();
-        CategoriaProduto categoriaMock = ProdutoCreator.criarCategoriaValida();
+        Produto produtoMock = ProdutoCreator.criarProdutoNovo();
+        CategoriaProduto categoriaMock = ProdutoCreator.criarCategoriaNova();
 
         when(produtoRepository.findByCodigoBarras(requestDTO.codigoBarras())).thenReturn(Optional.empty());
         when(categoriaRepository.findById(requestDTO.categoriaId())).thenReturn(Optional.of(categoriaMock));
@@ -58,11 +58,11 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    @DisplayName("BUG-02: Deve lançar exceção ao tentar registrar produto com código de barras já existente")
+    @DisplayName("Deve lançar exceção ao tentar registrar produto com código de barras já existente")
     void registrarProduto_DeveLancarExcecao_QuandoCodigoBarrasJaExiste() {
         // Arrange
         ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO();
-        Produto produtoExistente = ProdutoCreator.criarProdutoValido();
+        Produto produtoExistente = ProdutoCreator.criarProdutoNovo();
 
         when(produtoRepository.findByCodigoBarras(requestDTO.codigoBarras())).thenReturn(Optional.of(produtoExistente));
 
@@ -79,10 +79,10 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    @DisplayName("CT-04: Deve listar apenas os produtos em alerta convertendo para DTO")
+    @DisplayName("Deve listar apenas os produtos em alerta convertendo para DTO")
     void listarProdutosEmAlerta_DeveRetornarListaDeAlertas() {
         // Arrange
-        Produto produtoEmAlerta = ProdutoCreator.criarProdutoValido();
+        Produto produtoEmAlerta = ProdutoCreator.criarProdutoNovo();
         produtoEmAlerta.setEstoqueEmAlerta(true);
         produtoEmAlerta.setQuantidadeEstoque(new BigDecimal("5.0"));
 

@@ -5,6 +5,8 @@ import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.*;
 import com.senai.npsv_gestor_tintas_backend.infrastructure.security.JwtService;
 import com.senai.npsv_gestor_tintas_backend.util.ProducaoCreator;
+import com.senai.npsv_gestor_tintas_backend.util.ProdutoCreator;
+import com.senai.npsv_gestor_tintas_backend.util.UsuarioCreator;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,17 +48,15 @@ public class ProducaoControllerIntegrationTest {
         RestAssured.port = this.port;
         adminToken = jwtService.generateToken("admin@gestortintas.com", "ADMIN");
 
-        Producao producaoFake = ProducaoCreator.criarProducaoProcessando();
+        Usuario colorista = usuarioRepository.save(UsuarioCreator.criarUsuarioColoristaNovo());
 
-        usuarioRepository.save(producaoFake.getColorista());
+        CategoriaProduto cat = categoriaRepository.save(ProdutoCreator.criarCategoriaNova());
+        Produto insumoNovo = ProdutoCreator.criarProdutoNovo();
+        insumoNovo.setCategoria(cat);
+        insumoSalvo = produtoRepository.save(insumoNovo);
+        Formula formula = formulaRepository.save(ProducaoCreator.criarFormulaNova(insumoSalvo));
 
-        insumoSalvo = producaoFake.getFormula().getItens().getFirst().getInsumo();
-        categoriaRepository.save(insumoSalvo.getCategoria());
-        produtoRepository.save(insumoSalvo);
-
-        formulaRepository.save(producaoFake.getFormula());
-
-        producaoSalva = producaoRepository.save(producaoFake);
+        producaoSalva = producaoRepository.save(ProducaoCreator.criarProducaoProcessandoNova(colorista, formula));
 
         PesagemEvento pesagem = PesagemEvento.builder()
                 .producao(producaoSalva)
@@ -68,7 +68,7 @@ public class ProducaoControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("CT-02: Integração - Deve concluir produção e descontar 9L do estoque (100 -> 91)")
+    @DisplayName("Deve concluir produção e descontar 9L do estoque (100 -> 91)")
     void concluirProducao_DeveRetornar200EDescontarEstoque() {
         given()
                 .header("Authorization", "Bearer " + adminToken)
@@ -84,7 +84,7 @@ public class ProducaoControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("BUG-01: Integração - Rollback Atômico se o estoque falhar, mantendo produção PROCESSANDO")
+    @DisplayName("Rollback Atômico se o estoque falhar, mantendo produção PROCESSANDO")
     void concluirProducao_DeveGarantirRollback_QuandoEstoqueFalha() {
         // Arrange
         insumoSalvo.setQuantidadeEstoque(new BigDecimal("5.0"));
