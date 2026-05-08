@@ -9,6 +9,7 @@ import com.senai.npsv_gestor_tintas_backend.util.ProdutoCreator;
 import com.senai.npsv_gestor_tintas_backend.util.UsuarioCreator;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
 public class ProducaoControllerIntegrationTest {
     @LocalServerPort
     private int port;
@@ -46,7 +46,9 @@ public class ProducaoControllerIntegrationTest {
     @BeforeEach
     void setup() {
         RestAssured.port = this.port;
-        adminToken = jwtService.generateToken("admin@gestortintas.com", "ADMIN");
+
+        Usuario admin = usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo());
+        adminToken = jwtService.generateToken(admin.getEmail(), "ADMIN");
 
         Usuario colorista = usuarioRepository.save(UsuarioCreator.criarUsuarioColoristaNovo());
 
@@ -107,5 +109,15 @@ public class ProducaoControllerIntegrationTest {
 
         Produto produtoAposTentativa = produtoRepository.findById(insumoSalvo.getId()).orElseThrow();
         assertEquals(0, new BigDecimal("5.0").compareTo(produtoAposTentativa.getQuantidadeEstoque()));
+    }
+
+    @AfterEach
+    public void tearDown() {
+        pesagemEventoRepository.deleteAll();
+        producaoRepository.deleteAll();
+        formulaRepository.deleteAll();
+        produtoRepository.deleteAll();
+        categoriaRepository.deleteAll();
+        usuarioRepository.deleteAll();
     }
 }

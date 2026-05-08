@@ -12,6 +12,7 @@ import com.senai.npsv_gestor_tintas_backend.util.ProdutoCreator;
 import com.senai.npsv_gestor_tintas_backend.util.UsuarioCreator;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,14 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
 public class ProdutoControllerIntegrationTest {
     @LocalServerPort
     private int port;
@@ -43,19 +42,17 @@ public class ProdutoControllerIntegrationTest {
     void setup() {
         RestAssured.port = this.port;
 
-        Usuario admin = UsuarioCreator.criarUsuarioAdminNovo();
-        usuarioRepository.save(admin);
+        Usuario admin = usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo());
 
-        categoriaBase = ProdutoCreator.criarCategoriaNova();
-        categoriaRepository.save(categoriaBase);
+        categoriaBase = categoriaRepository.save(ProdutoCreator.criarCategoriaNova());
 
-        adminToken = jwtService.generateToken("admin@gestortintas.com", "ADMIN");
+        adminToken = jwtService.generateToken(admin.getEmail(), "ADMIN");
     }
 
     @Test
     @DisplayName("Deve criar produto e retornar status 201 Created")
     void criarProduto_DeveRetornarStatus201() {
-        ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO();
+        ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO(categoriaBase.getId());
 
         given()
                 .header("Authorization", "Bearer " + adminToken)
@@ -79,7 +76,7 @@ public class ProdutoControllerIntegrationTest {
         produtoRepository.save(produto1);
 
         // Act
-        ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO();
+        ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO(categoriaBase.getId());
 
         given()
                 .header("Authorization", "Bearer " + adminToken)
@@ -92,4 +89,10 @@ public class ProdutoControllerIntegrationTest {
                 .body("title", equalTo("Código já existente"));
     }
 
+    @AfterEach
+    void tearDown() {
+        produtoRepository.deleteAll();
+        categoriaRepository.deleteAll();
+        usuarioRepository.deleteAll();
+    }
 }
