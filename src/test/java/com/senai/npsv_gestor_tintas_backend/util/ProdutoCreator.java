@@ -41,7 +41,7 @@ public class ProdutoCreator {
         return produto;
     }
 
-    public static ProdutoRequestDTO criarProdutoRequestDTO() {
+    public static ProdutoRequestDTO criarProdutoRequestDTO(String categoriaId) {
         return new ProdutoRequestDTO(
                 "789123456",
                 "Tinta Base Branca 18L",
@@ -49,7 +49,7 @@ public class ProdutoCreator {
                 new BigDecimal("50.0"),
                 new BigDecimal("120.0"),
                 UnidadeMedida.L,
-                "cat-123",
+                categoriaId,
                 new BigDecimal("15.0")
         );
     }

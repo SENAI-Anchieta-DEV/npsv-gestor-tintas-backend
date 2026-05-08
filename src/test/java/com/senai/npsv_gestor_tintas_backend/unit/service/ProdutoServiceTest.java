@@ -39,9 +39,9 @@ public class ProdutoServiceTest {
     @DisplayName("Deve registrar um produto com sucesso quando os dados forem válidos")
     void registrarProduto_DeveRetornarProduto_QuandoDadosValidos() {
         // Arrange
-        ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO();
-        Produto produtoMock = ProdutoCreator.criarProdutoNovo();
         CategoriaProduto categoriaMock = ProdutoCreator.criarCategoriaNova();
+        ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO(categoriaMock.getId());
+        Produto produtoMock = ProdutoCreator.criarProdutoNovo();
 
         when(produtoRepository.findByCodigoBarras(requestDTO.codigoBarras())).thenReturn(Optional.empty());
         when(categoriaRepository.findById(requestDTO.categoriaId())).thenReturn(Optional.of(categoriaMock));
@@ -61,8 +61,9 @@ public class ProdutoServiceTest {
     @DisplayName("Deve lançar exceção ao tentar registrar produto com código de barras já existente")
     void registrarProduto_DeveLancarExcecao_QuandoCodigoBarrasJaExiste() {
         // Arrange
-        ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO();
-        Produto produtoExistente = ProdutoCreator.criarProdutoNovo();
+        CategoriaProduto categoriaMock = ProdutoCreator.criarCategoriaNova();
+        ProdutoRequestDTO requestDTO = ProdutoCreator.criarProdutoRequestDTO(categoriaMock.getId());
+        Produto produtoExistente = ProdutoCreator.criarProdutoSalvo();
 
         when(produtoRepository.findByCodigoBarras(requestDTO.codigoBarras())).thenReturn(Optional.of(produtoExistente));
 
@@ -94,7 +95,7 @@ public class ProdutoServiceTest {
         // Assert
         assertNotNull(listaDeAlertas);
         assertEquals(1, listaDeAlertas.size());
-        assertEquals("5.0", listaDeAlertas.getFirst().quantidadeEstoque().toString());
+        assertEquals(0, listaDeAlertas.getFirst().quantidadeEstoque().compareTo(new BigDecimal("5.0")));
         verify(produtoRepository, times(1)).findByEstoqueEmAlertaTrue();
     }
 }
