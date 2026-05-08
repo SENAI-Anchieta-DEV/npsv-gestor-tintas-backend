@@ -28,7 +28,7 @@ public class ProdutoTest {
 
     @Test
     @DisplayName("Deve manter alerta como FALSE quando estoque for maior que o mínimo")
-    void atualizarStatus_AlertaDeveManterFalse_QuandoEstoqueAcimaDoMinimo() {
+    void atualizarStatusAlerta_DeveManterFalse_QuandoEstoqueAcimaDoMinimo() {
         // Arrange
         Produto produto = ProdutoCreator.criarProdutoSalvo();
         produto.setQuantidadeEstoque(new BigDecimal("50.0"));
