@@ -95,7 +95,7 @@ public class ProdutoServiceTest {
         // Assert
         assertNotNull(listaDeAlertas);
         assertEquals(1, listaDeAlertas.size());
-        assertEquals("5.0", listaDeAlertas.getFirst().quantidadeEstoque().toString());
+        assertEquals(0, listaDeAlertas.getFirst().quantidadeEstoque().compareTo(new BigDecimal("5.0")));
         verify(produtoRepository, times(1)).findByEstoqueEmAlertaTrue();
     }
 }
