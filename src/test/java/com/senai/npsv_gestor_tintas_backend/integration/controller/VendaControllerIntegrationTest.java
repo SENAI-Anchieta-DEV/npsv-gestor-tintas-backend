@@ -54,9 +54,6 @@ public class VendaControllerIntegrationTest {
     void setup() {
         RestAssured.port = this.port;
 
-        vendaRepository.deleteAll();
-        produtoRepository.deleteAll();
-
         vendedorSalvo = usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo());
 
         vendedorToken = jwtService.generateToken(vendedorSalvo.getEmail(), vendedorSalvo.getRole().name());
