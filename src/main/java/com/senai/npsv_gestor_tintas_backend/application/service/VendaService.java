@@ -1,14 +1,12 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
 import com.senai.npsv_gestor_tintas_backend.application.dto.*;
-import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemVenda;
-import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
-import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
-import com.senai.npsv_gestor_tintas_backend.domain.entity.Venda;
+import com.senai.npsv_gestor_tintas_backend.domain.entity.*;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.EstoqueInsuficienteException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.TransicaoDeStatusInvalidaException;
+import com.senai.npsv_gestor_tintas_backend.domain.repository.ClienteRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ProdutoRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.UsuarioRepository;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.VendaRepository;
@@ -28,7 +26,7 @@ public class VendaService {
     private final VendaRepository vendaRepository;
     private final ProdutoRepository produtoRepository;
     private final UsuarioRepository usuarioRepository;
-
+    private final ClienteRepository clienteRepository;
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
@@ -75,6 +73,13 @@ public class VendaService {
             throw new TransicaoDeStatusInvalidaException(
                     "Apenas vendas abertas podem ser concluídas. Status atual: " + venda.getStatus()
             );
+        }
+
+        if (dto.clienteId() != null && !dto.clienteId().isBlank()) {
+            Cliente cliente = clienteRepository.findByIdAndAtivoTrue(dto.clienteId())
+                    .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado ou inativo"));
+
+            venda.setCliente(cliente);
         }
 
         BigDecimal valorTotal = BigDecimal.ZERO;

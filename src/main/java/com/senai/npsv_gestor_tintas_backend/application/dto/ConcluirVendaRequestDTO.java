@@ -12,5 +12,7 @@ public record ConcluirVendaRequestDTO(
         FormaPagamento formaPagamento,
 
         @NotEmpty(message = "A venda deve conter pelo menos um item.")
-        List<@NotNull @Valid ItemVendaRequestDTO> itens
+        List<@NotNull @Valid ItemVendaRequestDTO> itens,
+
+        String clienteId
 ) {}
