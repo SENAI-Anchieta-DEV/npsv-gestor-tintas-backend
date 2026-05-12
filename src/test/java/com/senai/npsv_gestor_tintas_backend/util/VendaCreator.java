@@ -47,6 +47,6 @@ public class VendaCreator {
     }
 
     public static ConcluirVendaRequestDTO criarConcluirVendaRequestDTO(FormaPagamento formaPagamento, List<ItemVendaRequestDTO> itens) {
-        return new ConcluirVendaRequestDTO(formaPagamento, itens);
+        return new ConcluirVendaRequestDTO(formaPagamento, itens, null);
     }
 }
