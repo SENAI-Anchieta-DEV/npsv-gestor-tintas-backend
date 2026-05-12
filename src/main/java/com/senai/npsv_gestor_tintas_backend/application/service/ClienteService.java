@@ -26,7 +26,7 @@ public class ClienteService {
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public ClienteResponseDTO registrarCliente(ClienteRequestDTO dto) {
         if (clienteRepository.existsByCpf(dto.cpf())) {
-            throw new CpfJaCadastradoException(dto.cpf());
+            throw new CpfJaCadastradoException("CPF já cadastrado.");
         }
 
         Cliente cliente = dto.toEntity();
@@ -54,7 +54,7 @@ public class ClienteService {
         Cliente clienteExistente = buscarClienteAtivoPorId(id);
 
         if (!clienteExistente.getCpf().equals(dto.cpf()) && clienteRepository.existsByCpf(dto.cpf())) {
-            throw new CpfJaCadastradoException(dto.cpf());
+            throw new CpfJaCadastradoException("CPF já cadastrado.");
         }
 
         clienteExistente.setNome(dto.nome());
@@ -87,6 +87,7 @@ public class ClienteService {
     }
 
     private Cliente buscarClienteAtivoPorId(String id) {
-        return clienteRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado com o ID: " + id));
+        return clienteRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado ou inativo com o ID: " + id));
     }
 }

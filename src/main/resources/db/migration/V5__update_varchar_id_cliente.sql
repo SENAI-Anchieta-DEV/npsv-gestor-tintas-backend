@@ -1,0 +1,5 @@
+ALTER TABLE cliente
+    ALTER COLUMN id TYPE VARCHAR(36);
+
+ALTER TABLE venda
+    ALTER COLUMN cliente_id TYPE VARCHAR(36);

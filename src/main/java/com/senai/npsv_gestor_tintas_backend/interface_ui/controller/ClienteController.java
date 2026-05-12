@@ -23,7 +23,7 @@ public class ClienteController {
     public ResponseEntity<ClienteResponseDTO> registrarCliente(@Valid @RequestBody ClienteRequestDTO dto){
         ClienteResponseDTO response = clienteService.registrarCliente(dto);
         URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest().path("/id/{id}")
+                .fromCurrentRequest().path("/{id}")
                 .buildAndExpand(response.id())
                 .toUri();
         return ResponseEntity.created(uri).body(response);
