@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.exceptions;
 
+import com.senai.npsv_gestor_tintas_backend.domain.exception.ClienteComVendaException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -104,6 +105,28 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 request.getRequestURI(),
                 "RN04 – Unicidade de Código"
+        );
+    }
+
+    @ExceptionHandler(CpfJaCadastradoException.class)
+    public ProblemDetail handleCpfJaCadastrado(CpfJaCadastradoException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "CPF já cadastrado",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+    }
+
+    @ExceptionHandler(ClienteComVendaException.class)
+    public ProblemDetail handleClienteComVenda(ClienteComVendaException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "Exclusão Bloqueada",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
         );
     }
 

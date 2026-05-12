@@ -13,6 +13,7 @@ public record VendaResponseDTO(
         BigDecimal valorTotal,
         StatusVenda status,
         String nomeVendedor,
+        String nomeCliente,
         List<ItemVendaResponseDTO> itens
 ) {
 
@@ -27,6 +28,7 @@ public record VendaResponseDTO(
                 venda.getValorTotal(),
                 venda.getStatus(),
                 venda.getVendedor() != null ? venda.getVendedor().getNome() : "Desconhecido",
+                venda.getCliente() != null ? venda.getCliente().getNome() : null,
                 itensDto
         );
     }
