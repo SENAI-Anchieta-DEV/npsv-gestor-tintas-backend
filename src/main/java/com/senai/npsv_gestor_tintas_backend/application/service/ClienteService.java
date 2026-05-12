@@ -30,7 +30,7 @@ public class ClienteService {
         }
 
         Cliente cliente = dto.toEntity();
-        return ClienteResponseDTO.fromEntity(clienteRepository.save(cliente));
+        return ClienteResponseDTO.fromEntity(clienteRepository.saveAndFlush(cliente));
     }
 
     @Transactional(readOnly = true)
