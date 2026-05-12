@@ -23,7 +23,7 @@ public class UsuarioController {
         UsuarioResponseDTO novoUsuario = service.registrarUsuario(dto);
         // Pega a URL atual (ex: http://localhost:8080/api/usuarios) e adiciona o /id/{id}
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/id/{id}")
+                .path("/{id}")
                 .buildAndExpand(novoUsuario.id())
                 .toUri();
 
