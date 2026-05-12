@@ -118,11 +118,22 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(ClienteComVendaException.class)
-    public ProblemDetail handleClienteComVenda(ClienteComVendaException ex, HttpServletRequest request) {
+    @ExceptionHandler(VinculoExistenteException.class)
+    public ProblemDetail handleVinculoExistente(VinculoExistenteException ex, HttpServletRequest request) {
         return ProblemDetailUtils.criarProblemDetail(
                 HttpStatus.CONFLICT,
                 "Exclusão Bloqueada",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+    }
+
+    @ExceptionHandler(CnpjJaCadastradoException.class)
+    public ProblemDetail handleCnpjJaCadastrado(CnpjJaCadastradoException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "CNPJ já cadastrado",
                 ex.getMessage(),
                 request.getRequestURI(),
                 null
