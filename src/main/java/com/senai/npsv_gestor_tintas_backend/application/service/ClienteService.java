@@ -3,7 +3,7 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ClienteRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ClienteResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Cliente;
-import com.senai.npsv_gestor_tintas_backend.domain.exception.ClienteComVendaException;
+import com.senai.npsv_gestor_tintas_backend.domain.exception.VinculoExistenteException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.CpfJaCadastradoException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;
 import com.senai.npsv_gestor_tintas_backend.domain.repository.ClienteRepository;
@@ -72,7 +72,7 @@ public class ClienteService {
         Cliente cliente = buscarClienteAtivoPorId(id);
 
         if (vendaRepository.existsByClienteId(id)) {
-            throw new ClienteComVendaException("O cliente possui vendas vinculadas e não pode ser removido.");
+            throw new VinculoExistenteException("O cliente possui vendas vinculadas e não pode ser removido.");
         }
 
         clienteRepository.delete(cliente);
