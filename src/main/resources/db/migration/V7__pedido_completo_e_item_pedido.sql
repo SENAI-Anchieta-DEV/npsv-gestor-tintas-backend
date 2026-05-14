@@ -1,9 +1,10 @@
+ALTER TABLE pedido ADD COLUMN admin_id VARCHAR(36);
+ALTER TABLE pedido ADD COLUMN status VARCHAR(50) NOT NULL DEFAULT 'PENDENTE';
+ALTER TABLE pedido ADD COLUMN data_pedido TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE pedido ADD COLUMN data_previsao_entrega DATE;
+ALTER TABLE pedido ADD COLUMN observacao TEXT;
+
 ALTER TABLE pedido
-    ADD COLUMN admin_id              VARCHAR(36),
-    ADD COLUMN status                VARCHAR(50)  NOT NULL DEFAULT 'PENDENTE',
-    ADD COLUMN data_pedido           TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ADD COLUMN data_previsao_entrega DATE,
-    ADD COLUMN observacao            TEXT,
     ADD CONSTRAINT fk_pedido_admin
         FOREIGN KEY (admin_id) REFERENCES usuario (id);
 
