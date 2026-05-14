@@ -59,7 +59,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.receberPedido(id));
     }
 
-    @PatchMapping("/{id}/cancelar")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelarPedido(@PathVariable String id) {
         pedidoService.cancelarPedido(id);
         return ResponseEntity.noContent().build();
