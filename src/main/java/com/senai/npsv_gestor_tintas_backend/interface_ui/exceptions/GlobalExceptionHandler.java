@@ -140,6 +140,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(PedidoNaoEditavelException.class)
+    public ProblemDetail handlePedidoNaoEditavel(PedidoNaoEditavelException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "Pedido Não Editável",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+    }
+
 
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ProblemDetail handleCredenciaisInvalidas(CredenciaisInvalidasException ex, HttpServletRequest request) {

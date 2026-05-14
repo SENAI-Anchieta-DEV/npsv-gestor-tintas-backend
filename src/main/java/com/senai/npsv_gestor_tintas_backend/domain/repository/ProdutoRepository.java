@@ -12,8 +12,6 @@ import java.util.Optional;
 
 public interface ProdutoRepository extends JpaRepository<Produto, String> {
 
-    // Atualização atômica para evitar que o estoque fique negativo em compras simultâneas.
-    // Retorna o número de linhas afetadas: 1 (Sucesso) ou 0 (Falha por falta de estoque).
     @Modifying(flushAutomatically = true)
     @Query("UPDATE Produto p " +
             "SET p.quantidadeEstoque = p.quantidadeEstoque - :quantidade, " +
@@ -33,4 +31,12 @@ public interface ProdutoRepository extends JpaRepository<Produto, String> {
                         @Param("quantidade") BigDecimal quantidade);
 
     List<Produto> findByEstoqueEmAlertaTrue();
+
+    @Modifying(flushAutomatically = true)
+    @Query("UPDATE Produto p " +
+            "SET p.quantidadeEstoque = p.quantidadeEstoque + :quantidade, " +
+            "    p.estoqueEmAlerta = CASE WHEN (p.quantidadeEstoque + :quantidade) <= p.estoqueMinimo THEN true ELSE false END " +
+            "WHERE p.id = :produtoId")
+    void incrementarEstoque(@Param("produtoId") String produtoId,
+                            @Param("quantidade") BigDecimal quantidade);
 }
