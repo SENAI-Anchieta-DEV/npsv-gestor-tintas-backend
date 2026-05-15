@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
+import com.senai.npsv_gestor_tintas_backend.application.dto.ItemPedidoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.PedidoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.PedidoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.PedidoService;
@@ -40,6 +41,12 @@ public class PedidoController {
     @GetMapping("/{id}")
     public ResponseEntity<PedidoResponseDTO> listarPedidoPorId(@PathVariable String id) {
         return ResponseEntity.ok(pedidoService.listarPedidoPorId(id));
+    }
+
+    @GetMapping("/{id}/itens")
+    public ResponseEntity<List<ItemPedidoResponseDTO>> listarItensDePedido(@PathVariable String id) {
+        List<ItemPedidoResponseDTO> itens = pedidoService.listarPedidoPorId(id).itens();
+        return ResponseEntity.ok(itens);
     }
 
     @PutMapping("/{id}")
