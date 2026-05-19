@@ -172,6 +172,6 @@ public class PedidoService {
 
     private Fornecedor buscarFornecedorPorId(String id) {
         return fornecedorRepository.findByIdAndAtivoTrue(id)
-                .orElseThrow(() -> new EntidadeNaoEncontradaException("Fornecedor não encontrado."));
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Fornecedor não encontrado ou inativo."));
     }
 }
