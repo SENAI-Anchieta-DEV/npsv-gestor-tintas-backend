@@ -2,6 +2,7 @@ package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
 import com.senai.npsv_gestor_tintas_backend.application.dto.*;
 import com.senai.npsv_gestor_tintas_backend.application.service.VendaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/vendas")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearer-jwt")
 public class VendaController {
 
     private final VendaService vendaService;

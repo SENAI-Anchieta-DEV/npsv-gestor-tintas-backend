@@ -3,6 +3,7 @@ package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 import com.senai.npsv_gestor_tintas_backend.application.dto.FornecedorRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.FornecedorResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.FornecedorService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/fornecedores")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearer-jwt")
 public class FornecedorController {
 
     private final FornecedorService fornecedorService;

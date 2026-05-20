@@ -4,6 +4,7 @@ import com.senai.npsv_gestor_tintas_backend.application.dto.AlertaEstoqueRespons
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.ProdutoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/produtos")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearer-jwt")
 public class ProdutoController {
     private final ProdutoService service;
 

@@ -5,6 +5,7 @@ import com.senai.npsv_gestor_tintas_backend.application.dto.PedidoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.PedidoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.PedidoService;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusPedido;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/pedidos")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearer-jwt")
 public class PedidoController {
 
     private final PedidoService pedidoService;

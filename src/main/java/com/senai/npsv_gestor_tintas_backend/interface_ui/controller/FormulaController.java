@@ -3,6 +3,7 @@ package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.FormulaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/formulas")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearer-jwt")
 public class FormulaController {
     private final FormulaService service;
 
