@@ -38,11 +38,6 @@ public class PesagemMqttService {
     private final ProducaoRepository producaoRepository;
     private final ObjectMapper objectMapper;
 
-    // ==========================================================================
-    // PROCESSAMENTO DO PAYLOAD MQTT — chamado pelo subscriber (sem HTTP context)
-    // NÃO usa @PreAuthorize: a segurança aqui é garantida pela rede interna
-    // (somente o broker local publica neste tópico).
-    // ==========================================================================
 
     @Transactional
     public void processarPayloadMqtt(String payloadJson) {
