@@ -1,7 +1,10 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
+import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemAtualResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.service.PesagemMqttService;
 import com.senai.npsv_gestor_tintas_backend.application.service.ProducaoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +19,9 @@ import java.util.List;
 @RequestMapping("/api/producoes")
 @RequiredArgsConstructor
 public class ProducaoController {
+
     private final ProducaoService producaoService;
+    private final PesagemMqttService pesagemMqttService; // NPSV-304
 
     @PostMapping
     public ResponseEntity<ProducaoResponseDTO> iniciarProducao(@Valid @RequestBody ProducaoRequestDTO dto) {
@@ -49,5 +54,24 @@ public class ProducaoController {
     @PatchMapping("/{id}/concluir")
     public ResponseEntity<ProducaoResponseDTO> concluirProducao(@PathVariable String id) {
         return ResponseEntity.ok(producaoService.concluirProducao(id));
+    }
+
+    // --- Endpoints de integração IoT (NPSV-304) ---
+
+    /**
+     * NPSV-311 — Retorna o estado atual da pesagem para a Aba da Máquina.
+     * Consumido pelo frontend via polling a cada 500ms.
+     */
+    @GetMapping("/{id}/pesagem/atual")
+    public ResponseEntity<PesagemAtualResponseDTO> getPesagemAtual(@PathVariable String id) {
+        return ResponseEntity.ok(pesagemMqttService.getPesagemAtual(id));
+    }
+
+    /**
+     * NPSV-312 — Retorna o histórico completo de pesagens para auditoria.
+     */
+    @GetMapping("/{id}/eventos-pesagem")
+    public ResponseEntity<List<PesagemEventoResponseDTO>> getEventosPesagem(@PathVariable String id) {
+        return ResponseEntity.ok(pesagemMqttService.getEventosPesagem(id));
     }
 }
