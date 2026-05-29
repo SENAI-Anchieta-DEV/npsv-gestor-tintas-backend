@@ -24,7 +24,7 @@ public record ClienteResponseDTO(
         @Schema(description = "Endereço completo do cliente", example = "Rua das Flores, 123, Bairro Jardim, Cidade, Estado, CEP 12345-678")
         String endereco,
 
-        @Schema(description = "Estado do cliente no sistema", example = "true")
+        @Schema(description = "Indica se o cliente está ativo ou inativo", example = "true")
         boolean ativo,
 
         @Schema(description = "Data e hora de criação do cliente", example = "2024-01-01T12:00:00")
