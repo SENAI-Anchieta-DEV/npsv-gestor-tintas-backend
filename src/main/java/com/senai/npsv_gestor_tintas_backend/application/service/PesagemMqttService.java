@@ -36,7 +36,7 @@ public class PesagemMqttService {
 
     private final PesagemEventoRepository pesagemEventoRepository;
     private final ProducaoRepository producaoRepository;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @Transactional
