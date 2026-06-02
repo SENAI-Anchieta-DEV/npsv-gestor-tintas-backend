@@ -22,6 +22,7 @@ public class UsuarioService {
     private final UsuarioRepository repository;
     private final PasswordEncoder encoder;
 
+    @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO dto) {
         if (repository.findByEmailAndAtivoTrue(dto.email()).isPresent()) {
@@ -56,6 +57,7 @@ public class UsuarioService {
         return new UsuarioResponseDTO(usuario);
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO atualizarUsuario(String email, AtualizarUsuarioRequestDTO dto) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
