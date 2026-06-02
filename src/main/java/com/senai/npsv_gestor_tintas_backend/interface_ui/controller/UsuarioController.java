@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
+import com.senai.npsv_gestor_tintas_backend.application.dto.AtualizarUsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.UsuarioService;
@@ -47,7 +48,7 @@ public class UsuarioController {
 
     @PutMapping ("/email/{email}")
     public ResponseEntity<UsuarioResponseDTO> atualizarUsuario(@PathVariable String email,
-                                                               @Valid @RequestBody UsuarioRequestDTO dto) {
+                                                               @Valid @RequestBody AtualizarUsuarioRequestDTO dto) {
         return ResponseEntity.ok(service.atualizarUsuario(email, dto));
     }
 

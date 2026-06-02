@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
+import com.senai.npsv_gestor_tintas_backend.application.dto.AtualizarUsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
@@ -56,12 +57,17 @@ public class UsuarioService {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    public UsuarioResponseDTO atualizarUsuario(String email, UsuarioRequestDTO dto) {
+    public UsuarioResponseDTO atualizarUsuario(String email, AtualizarUsuarioRequestDTO dto) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
 
+        if (!usuario.getEmail().equals(dto.email()) && repository.findByEmail(dto.email()).isPresent()) {
+            throw new EntidadeDuplicadaException("Este e-mail já está em uso por outro usuário.");
+        }
+
         usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
         usuario.setRole(dto.role());
-        usuario.setSenha(encoder.encode(dto.senha()));
+
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 
