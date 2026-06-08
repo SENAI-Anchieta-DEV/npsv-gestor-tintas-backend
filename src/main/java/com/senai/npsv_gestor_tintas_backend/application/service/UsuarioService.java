@@ -44,14 +44,14 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or authentication.name == #email")
     public UsuarioResponseDTO listarUsuarioPorEmail(String email) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         return new UsuarioResponseDTO(usuario);
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COLORISTA')")
     public UsuarioResponseDTO listarUsuarioPorId(String id) {
         var usuario = buscarUsuarioAtivoPorId(id);
         return new UsuarioResponseDTO(usuario);

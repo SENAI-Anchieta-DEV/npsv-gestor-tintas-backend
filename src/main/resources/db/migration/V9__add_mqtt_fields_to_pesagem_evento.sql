@@ -3,7 +3,6 @@
 -- estavel         → flag de estabilidade calculada no firmware
 -- resultado_rn01  → resultado da validação RN01 calculada no backend
 
-ALTER TABLE pesagem_evento
-    ADD COLUMN IF NOT EXISTS unidade_medida VARCHAR(10),
-    ADD COLUMN IF NOT EXISTS estavel        BOOLEAN,
-    ADD COLUMN IF NOT EXISTS resultado_rn01 VARCHAR(30);
+ALTER TABLE pesagem_evento ADD COLUMN IF NOT EXISTS unidade_medida VARCHAR(10);
+ALTER TABLE pesagem_evento ADD COLUMN IF NOT EXISTS estavel BOOLEAN;
+ALTER TABLE pesagem_evento ADD COLUMN IF NOT EXISTS resultado_rn01 VARCHAR(30);
