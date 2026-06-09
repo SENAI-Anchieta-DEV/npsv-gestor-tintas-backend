@@ -66,6 +66,48 @@ public class VendaService {
 
     @Transactional
     @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
+    public VendaResponseDTO atualizarVenda(String id, AtualizarVendaRequestDTO dto) {
+        Venda venda = buscarVendaPorId(id);
+
+        if (venda.getStatus() != StatusVenda.ABERTA) {
+            throw new TransicaoDeStatusInvalidaException(
+                    "Apenas vendas com status ABERTA podem ser atualizadas. Status atual: " + venda.getStatus()
+            );
+        }
+
+        if (dto.clienteId() != null && !dto.clienteId().isBlank()) {
+            Cliente cliente = buscarClientePorId(dto.clienteId());
+            venda.setCliente(cliente);
+        } else {
+            venda.setCliente(null);
+        }
+
+        venda.getItens().clear();
+        BigDecimal valorTotal = BigDecimal.ZERO;
+
+        if (dto.itens() != null) {
+            for (ItemVendaRequestDTO itemDto : dto.itens()) {
+                Produto produto = buscarProdutoPorId(itemDto.produtoId());
+
+                ItemVenda novoItem = itemDto.toEntity();
+                novoItem.setVenda(venda);
+                novoItem.setProduto(produto);
+                novoItem.setPrecoPraticado(produto.getPrecoVenda());
+
+                venda.getItens().add(novoItem);
+
+                valorTotal = valorTotal.add(produto.getPrecoVenda().multiply(itemDto.quantidade()));
+            }
+        }
+
+        venda.setValorTotal(valorTotal);
+        venda.setFormaPagamento(dto.formaPagamento());
+
+        return VendaResponseDTO.fromEntity(vendaRepository.save(venda));
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR')")
     public VendaResponseDTO concluirVenda(String vendaId, ConcluirVendaRequestDTO dto) {
         Venda venda = buscarVendaPorId(vendaId);
 
@@ -76,17 +118,16 @@ public class VendaService {
         }
 
         if (dto.clienteId() != null && !dto.clienteId().isBlank()) {
-            Cliente cliente = clienteRepository.findByIdAndAtivoTrue(dto.clienteId())
-                    .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado ou inativo"));
-
+            Cliente cliente = buscarClientePorId(dto.clienteId());
             venda.setCliente(cliente);
         }
 
         BigDecimal valorTotal = BigDecimal.ZERO;
 
+        venda.getItens().clear();
+
         for (ItemVendaRequestDTO itemDto : dto.itens()) {
-            Produto produto = produtoRepository.findById(itemDto.produtoId())
-                    .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado: " + itemDto.produtoId()));
+            Produto produto = buscarProdutoPorId(itemDto.produtoId());
 
             int linhasAfetadas = produtoRepository.darBaixaEstoque(produto.getId(), itemDto.quantidade());
             boolean possuiEstoqueSuficiente = linhasAfetadas > 0;
@@ -149,5 +190,15 @@ public class VendaService {
 
     private Venda buscarVendaPorId(String id) {
         return vendaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Venda não encontrada."));
+    }
+
+    private Cliente buscarClientePorId(String id) {
+        return clienteRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Cliente não encontrado ou inativo."));
+    }
+
+    private Produto buscarProdutoPorId(String id) {
+        return produtoRepository.findById(id)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Produto não encontrado."));
     }
 }

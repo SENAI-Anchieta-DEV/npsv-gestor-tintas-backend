@@ -35,8 +35,15 @@ public class VendaController {
     @GetMapping("/vendedor/{vendedorId}")
     public ResponseEntity<List<VendaResponseDTO>> listarVendasPorVendedor(@PathVariable String vendedorId) {
         return ResponseEntity.ok(vendaService.listarVendasPorVendedor(vendedorId));
-
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<VendaResponseDTO> atualizarVenda(
+            @PathVariable String id,
+            @Valid @RequestBody AtualizarVendaRequestDTO dto) {
+        return ResponseEntity.ok(vendaService.atualizarVenda(id, dto));
+    }
+
     @PatchMapping("/{id}/concluir")
     public ResponseEntity<VendaResponseDTO> concluirVenda(
             @PathVariable String id,
