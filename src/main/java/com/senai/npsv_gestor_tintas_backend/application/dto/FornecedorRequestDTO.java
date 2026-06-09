@@ -3,14 +3,12 @@ package com.senai.npsv_gestor_tintas_backend.application.dto;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Fornecedor;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.br.CNPJ;
 
 public record FornecedorRequestDTO(
         @NotBlank(message = "A razão social é obrigatória.")
         String razaoSocial,
 
         @NotBlank(message = "O CNPJ é obrigatório.")
-        @CNPJ(message = "O formato do CNPJ é inválido.")
         String cnpj,
 
         @NotBlank(message = "O nome do contato é obrigatório.")
