@@ -78,8 +78,6 @@ public class VendaService {
         if (dto.clienteId() != null && !dto.clienteId().isBlank()) {
             Cliente cliente = buscarClientePorId(dto.clienteId());
             venda.setCliente(cliente);
-        } else {
-            venda.setCliente(null);
         }
 
         venda.getItens().clear();
@@ -88,6 +86,16 @@ public class VendaService {
         if (dto.itens() != null) {
             for (ItemVendaRequestDTO itemDto : dto.itens()) {
                 Produto produto = buscarProdutoPorId(itemDto.produtoId());
+
+                int linhasAfetadas = produtoRepository.darBaixaEstoque(produto.getId(), itemDto.quantidade());
+                boolean possuiEstoqueSuficiente = linhasAfetadas > 0;
+
+                if (!possuiEstoqueSuficiente) {
+                    throw new EstoqueInsuficienteException(String.format(
+                            "Estoque insuficiente para o produto '%s'.",
+                            produto.getDescricao()),
+                            "RN03 – Bloqueio de Venda");
+                }
 
                 ItemVenda novoItem = itemDto.toEntity();
                 novoItem.setVenda(venda);
