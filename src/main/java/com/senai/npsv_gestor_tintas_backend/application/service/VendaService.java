@@ -89,6 +89,16 @@ public class VendaService {
             for (ItemVendaRequestDTO itemDto : dto.itens()) {
                 Produto produto = buscarProdutoPorId(itemDto.produtoId());
 
+                int linhasAfetadas = produtoRepository.darBaixaEstoque(produto.getId(), itemDto.quantidade());
+                boolean possuiEstoqueSuficiente = linhasAfetadas > 0;
+
+                if (!possuiEstoqueSuficiente) {
+                    throw new EstoqueInsuficienteException(String.format(
+                            "Estoque insuficiente para o produto '%s'.",
+                            produto.getDescricao()),
+                            "RN03 – Bloqueio de Venda");
+                }
+
                 ItemVenda novoItem = itemDto.toEntity();
                 novoItem.setVenda(venda);
                 novoItem.setProduto(produto);
