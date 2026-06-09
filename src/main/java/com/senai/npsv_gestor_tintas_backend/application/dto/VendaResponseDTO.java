@@ -1,6 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.application.dto;
 
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Venda;
+import com.senai.npsv_gestor_tintas_backend.domain.enums.FormaPagamento;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ public record VendaResponseDTO(
         LocalDateTime dataAbertura,
         BigDecimal valorTotal,
         StatusVenda status,
+        FormaPagamento formaPagamento,
         String nomeVendedor,
         String nomeCliente,
         List<ItemVendaResponseDTO> itens
@@ -27,6 +29,7 @@ public record VendaResponseDTO(
                 venda.getDataAbertura(),
                 venda.getValorTotal(),
                 venda.getStatus(),
+                venda.getFormaPagamento(),
                 venda.getVendedor() != null ? venda.getVendedor().getNome() : "Desconhecido",
                 venda.getCliente() != null ? venda.getCliente().getNome() : null,
                 itensDto
