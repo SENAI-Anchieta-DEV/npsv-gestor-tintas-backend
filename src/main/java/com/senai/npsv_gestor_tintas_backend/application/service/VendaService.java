@@ -78,8 +78,6 @@ public class VendaService {
         if (dto.clienteId() != null && !dto.clienteId().isBlank()) {
             Cliente cliente = buscarClientePorId(dto.clienteId());
             venda.setCliente(cliente);
-        } else {
-            venda.setCliente(null);
         }
 
         venda.getItens().clear();
