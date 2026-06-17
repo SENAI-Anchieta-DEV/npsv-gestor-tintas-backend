@@ -1,6 +1,8 @@
 package com.senai.npsv_gestor_tintas_backend.unit.service;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.*;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.ConcluirVendaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.ItemVendaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.VendaResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.VendaService;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;

@@ -1,8 +1,8 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.ItemPedidoRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PedidoRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PedidoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.pedido.ItemPedidoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.pedido.PedidoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.pedido.PedidoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.*;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusPedido;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.EntidadeNaoEncontradaException;

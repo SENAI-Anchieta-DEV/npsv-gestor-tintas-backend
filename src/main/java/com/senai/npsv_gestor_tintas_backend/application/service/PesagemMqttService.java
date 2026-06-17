@@ -2,9 +2,9 @@ package com.senai.npsv_gestor_tintas_backend.application.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemAtualResponseDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoResponseDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemMqttPayloadDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemAtualResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemEventoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemMqttPayloadDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.PesagemEvento;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;

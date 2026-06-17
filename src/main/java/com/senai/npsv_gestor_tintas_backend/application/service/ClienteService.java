@@ -1,7 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.ClienteRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ClienteResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.cliente.ClienteRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.cliente.ClienteResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Cliente;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.VinculoExistenteException;
 import com.senai.npsv_gestor_tintas_backend.domain.exception.CpfJaCadastradoException;

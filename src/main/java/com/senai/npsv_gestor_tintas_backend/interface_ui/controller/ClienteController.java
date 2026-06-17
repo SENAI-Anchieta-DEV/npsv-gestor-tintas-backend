@@ -1,7 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.ClienteRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ClienteResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.cliente.ClienteRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.cliente.ClienteResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.ClienteService;
 import com.senai.npsv_gestor_tintas_backend.infrastructure.openapi.ApiErrorResponseSchema;
 import io.swagger.v3.oas.annotations.Operation;

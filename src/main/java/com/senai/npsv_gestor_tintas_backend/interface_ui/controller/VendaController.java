@@ -1,6 +1,9 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.*;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.AtualizarVendaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.ConcluirVendaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.IniciarVendaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.VendaResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.VendaService;
 import com.senai.npsv_gestor_tintas_backend.infrastructure.openapi.ApiErrorResponseSchema;
 import io.swagger.v3.oas.annotations.Operation;

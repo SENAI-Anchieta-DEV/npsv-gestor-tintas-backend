@@ -1,7 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemEventoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemEventoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.PesagemEventoService;
 import com.senai.npsv_gestor_tintas_backend.infrastructure.openapi.ApiErrorResponseSchema;
 import io.swagger.v3.oas.annotations.Operation;

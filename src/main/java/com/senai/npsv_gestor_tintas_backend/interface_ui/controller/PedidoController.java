@@ -1,8 +1,8 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.ItemPedidoResponseDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PedidoRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PedidoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.pedido.ItemPedidoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.pedido.PedidoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.pedido.PedidoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.PedidoService;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusPedido;
 import com.senai.npsv_gestor_tintas_backend.infrastructure.openapi.ApiErrorResponseSchema;

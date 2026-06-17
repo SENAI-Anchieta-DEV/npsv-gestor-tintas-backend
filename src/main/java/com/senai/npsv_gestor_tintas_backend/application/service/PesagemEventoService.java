@@ -1,7 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemEventoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemEventoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.PesagemEvento;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusProducao;

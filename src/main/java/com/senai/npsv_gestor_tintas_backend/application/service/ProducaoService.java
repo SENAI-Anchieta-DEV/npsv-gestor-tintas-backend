@@ -1,7 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.ProducaoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.ProducaoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;

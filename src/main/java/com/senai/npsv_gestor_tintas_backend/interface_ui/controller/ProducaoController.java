@@ -1,9 +1,9 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemAtualResponseDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.PesagemEventoResponseDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ProducaoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemAtualResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.PesagemEventoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.ProducaoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.producao.ProducaoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.PesagemMqttService;
 import com.senai.npsv_gestor_tintas_backend.application.service.ProducaoService;
 import com.senai.npsv_gestor_tintas_backend.infrastructure.openapi.ApiErrorResponseSchema;

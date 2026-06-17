@@ -1,8 +1,8 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.controller;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.AlertaEstoqueResponseDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ProdutoResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.produto.AlertaEstoqueResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.produto.ProdutoRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.produto.ProdutoResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.ProdutoService;
 import com.senai.npsv_gestor_tintas_backend.infrastructure.openapi.ApiErrorResponseSchema;
 import io.swagger.v3.oas.annotations.Operation;

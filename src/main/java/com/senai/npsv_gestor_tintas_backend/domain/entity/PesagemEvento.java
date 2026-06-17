@@ -24,7 +24,7 @@ public class PesagemEvento {
     private String id;
 
     @NotNull
-    @DecimalMin(value = "0.0", inclusive = true)
+    @DecimalMin(value = "0.0")
     @Column(nullable = false)
     private BigDecimal pesoLido;
 
@@ -32,23 +32,16 @@ public class PesagemEvento {
     @Column(nullable = false)
     private LocalDateTime timestamp;
 
-    // Mantido para compatibilidade com o PesagemEventoService REST existente.
-    // Derivado de resultadoRN01: true quando APROVADO.
     @Column(nullable = false)
     private boolean foiAprovado;
 
-    // --- Campos novos do contrato MQTT ---
-
-    // Unidade enviada pelo ESP32 conforme o Enum do contrato NPSV-116
     @Enumerated(EnumType.STRING)
     @Column(name = "unidade_medida")
     private UnidadeMedida unidadeMedida;
 
-    // Flag de estabilidade calculada no firmware (RN01 — margem relativa 5%)
     @Column(name = "estavel")
     private Boolean estavel;
 
-    // Resultado da validação RN01 calculada no backend
     @Enumerated(EnumType.STRING)
     @Column(name = "resultado_rn01")
     private ResultadoRN01 resultadoRN01;
