@@ -4,7 +4,6 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.Fornecedor;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.br.CNPJ;
 
 public record FornecedorRequestDTO(
         @Schema(description = "A razão social do fornecedor", example = "Tintas XYZ Ltda.")
@@ -13,7 +12,6 @@ public record FornecedorRequestDTO(
 
         @Schema(description = "O CNPJ do fornecedor, formato válido para CNPJ brasileiro", example = "12.345.678/0001-90")
         @NotBlank(message = "O CNPJ é obrigatório.")
-        @CNPJ(message = "O formato do CNPJ é inválido.")
         String cnpj,
 
         @Schema(description = "O nome de contato do fornecedor", example = "Maria Silva")

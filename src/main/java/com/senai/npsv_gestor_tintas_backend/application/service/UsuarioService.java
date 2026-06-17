@@ -1,5 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
+import com.senai.npsv_gestor_tintas_backend.application.dto.AtualizarUsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.application.dto.UsuarioResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
@@ -21,6 +22,7 @@ public class UsuarioService {
     private final UsuarioRepository repository;
     private final PasswordEncoder encoder;
 
+    @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public UsuarioResponseDTO registrarUsuario(UsuarioRequestDTO dto) {
         if (repository.findByEmailAndAtivoTrue(dto.email()).isPresent()) {
@@ -42,26 +44,32 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or authentication.name == #email")
     public UsuarioResponseDTO listarUsuarioPorEmail(String email) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
         return new UsuarioResponseDTO(usuario);
     }
 
     @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'COLORISTA')")
     public UsuarioResponseDTO listarUsuarioPorId(String id) {
         var usuario = buscarUsuarioAtivoPorId(id);
         return new UsuarioResponseDTO(usuario);
     }
 
+    @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public UsuarioResponseDTO atualizarUsuario(String email, UsuarioRequestDTO dto) {
+    public UsuarioResponseDTO atualizarUsuario(String email, AtualizarUsuarioRequestDTO dto) {
         var usuario = buscarUsuarioAtivoPorEmail(email);
 
+        if (!usuario.getEmail().equals(dto.email()) && repository.findByEmail(dto.email()).isPresent()) {
+            throw new EntidadeDuplicadaException("Este e-mail já está em uso por outro usuário.");
+        }
+
         usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
         usuario.setRole(dto.role());
-        usuario.setSenha(encoder.encode(dto.senha()));
+
         return UsuarioResponseDTO.fromEntity(repository.save(usuario));
     }
 

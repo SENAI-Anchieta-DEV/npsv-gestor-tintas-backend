@@ -1,6 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.application.dto;
 
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Venda;
+import com.senai.npsv_gestor_tintas_backend.domain.enums.FormaPagamento;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -20,6 +21,9 @@ public record VendaResponseDTO(
 
         @Schema(description = "Status atual da venda", example = "ABERTA")
         StatusVenda status,
+
+
+        FormaPagamento formaPagamento,
 
         @Schema(description = "Nome do Vendedor responsável pela venda", example = "João Silva")
         String nomeVendedor,
@@ -41,6 +45,7 @@ public record VendaResponseDTO(
                 venda.getDataAbertura(),
                 venda.getValorTotal(),
                 venda.getStatus(),
+                venda.getFormaPagamento(),
                 venda.getVendedor() != null ? venda.getVendedor().getNome() : "Desconhecido",
                 venda.getCliente() != null ? venda.getCliente().getNome() : null,
                 itensDto

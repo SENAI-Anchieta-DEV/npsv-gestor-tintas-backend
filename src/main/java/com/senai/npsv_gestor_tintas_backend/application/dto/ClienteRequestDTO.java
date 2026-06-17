@@ -4,7 +4,6 @@ import com.senai.npsv_gestor_tintas_backend.domain.entity.Cliente;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.br.CPF;
 
 public record ClienteRequestDTO(
         @Schema(description = "Nome completo do cliente", example = "João da Silva")
@@ -13,7 +12,6 @@ public record ClienteRequestDTO(
 
         @Schema(description = "CPF do cliente, formato válido para CPF brasileiro", example = "123.456.789-00")
         @NotBlank(message = "O CPF não pode estar em branco.")
-        @CPF(message = "O CPF é inválido.")
         String cpf,
 
         @Schema(description = "Email do cliente para contato", example = "email@email.com")
