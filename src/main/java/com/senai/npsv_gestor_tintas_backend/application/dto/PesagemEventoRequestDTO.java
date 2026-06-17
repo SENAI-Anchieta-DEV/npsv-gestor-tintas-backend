@@ -2,14 +2,17 @@ package com.senai.npsv_gestor_tintas_backend.application.dto;
 
 import com.senai.npsv_gestor_tintas_backend.domain.entity.PesagemEvento;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Producao;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public record PesagemEventoRequestDTO(
+        @Schema(description = "Peso lido pela balança durante o evento de pesagem", example = "150.75")
         @NotNull(message = "O peso lido pela balança é obrigatório.")
         BigDecimal pesoLido,
 
+        @Schema(description = "Identificador da produção correspondente ao evento de pesagem", example = "123e4567-e89b-12d3-a456-426614174000")
         @NotBlank(message = "O ID da produção correspondente é obrigatório.")
         String producaoId
 ) {
