@@ -22,7 +22,7 @@ public record VendaResponseDTO(
         @Schema(description = "Status atual da venda", example = "ABERTA")
         StatusVenda status,
 
-
+        @Schema(description = "Forma de pagamento utilizada na venda", example = "CARTAO_CREDITO")
         FormaPagamento formaPagamento,
 
         @Schema(description = "Nome do Vendedor responsável pela venda", example = "João Silva")
