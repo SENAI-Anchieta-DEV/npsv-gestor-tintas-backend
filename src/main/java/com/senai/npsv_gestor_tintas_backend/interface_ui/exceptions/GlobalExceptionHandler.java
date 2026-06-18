@@ -1,6 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.exceptions;
 
 import com.senai.npsv_gestor_tintas_backend.domain.exception.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.*;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -104,6 +106,50 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 request.getRequestURI(),
                 "RN04 – Unicidade de Código"
+        );
+    }
+
+    @ExceptionHandler(CpfJaCadastradoException.class)
+    public ProblemDetail handleCpfJaCadastrado(CpfJaCadastradoException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "CPF já cadastrado",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+    }
+
+    @ExceptionHandler(VinculoExistenteException.class)
+    public ProblemDetail handleVinculoExistente(VinculoExistenteException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "Exclusão Bloqueada",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+    }
+
+    @ExceptionHandler(CnpjJaCadastradoException.class)
+    public ProblemDetail handleCnpjJaCadastrado(CnpjJaCadastradoException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "CNPJ já cadastrado",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
+        );
+    }
+
+    @ExceptionHandler(PedidoNaoEditavelException.class)
+    public ProblemDetail handlePedidoNaoEditavel(PedidoNaoEditavelException ex, HttpServletRequest request) {
+        return ProblemDetailUtils.criarProblemDetail(
+                HttpStatus.CONFLICT,
+                "Pedido Não Editável",
+                ex.getMessage(),
+                request.getRequestURI(),
+                null
         );
     }
 

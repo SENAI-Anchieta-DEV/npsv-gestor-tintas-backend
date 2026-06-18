@@ -1,8 +1,8 @@
 package com.senai.npsv_gestor_tintas_backend.util;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.ConcluirVendaRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.IniciarVendaRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ItemVendaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.ConcluirVendaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.IniciarVendaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.venda.ItemVendaRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Venda;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.FormaPagamento;
 import com.senai.npsv_gestor_tintas_backend.domain.enums.StatusVenda;
@@ -47,6 +47,6 @@ public class VendaCreator {
     }
 
     public static ConcluirVendaRequestDTO criarConcluirVendaRequestDTO(FormaPagamento formaPagamento, List<ItemVendaRequestDTO> itens) {
-        return new ConcluirVendaRequestDTO(formaPagamento, itens);
+        return new ConcluirVendaRequestDTO(formaPagamento, itens, null);
     }
 }

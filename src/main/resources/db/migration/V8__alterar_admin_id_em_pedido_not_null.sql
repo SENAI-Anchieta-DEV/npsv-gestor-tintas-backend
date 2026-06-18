@@ -1,0 +1,2 @@
+ALTER TABLE pedido
+ALTER COLUMN admin_id SET NOT NULL;

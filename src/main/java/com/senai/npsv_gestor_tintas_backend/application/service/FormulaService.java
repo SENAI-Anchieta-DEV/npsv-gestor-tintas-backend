@@ -1,8 +1,8 @@
 package com.senai.npsv_gestor_tintas_backend.application.service;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaResponseDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ItemFormulaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.formula.FormulaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.formula.FormulaResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.formula.ItemFormulaRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Formula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.ItemFormula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

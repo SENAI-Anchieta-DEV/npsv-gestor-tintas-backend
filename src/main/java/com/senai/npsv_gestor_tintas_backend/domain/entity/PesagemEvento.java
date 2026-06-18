@@ -1,5 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.domain.entity;
 
+import com.senai.npsv_gestor_tintas_backend.domain.enums.ResultadoRN01;
+import com.senai.npsv_gestor_tintas_backend.domain.enums.UnidadeMedida;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -22,7 +24,7 @@ public class PesagemEvento {
     private String id;
 
     @NotNull
-    @DecimalMin(value = "0.0", inclusive = true)
+    @DecimalMin(value = "0.0")
     @Column(nullable = false)
     private BigDecimal pesoLido;
 
@@ -32,6 +34,17 @@ public class PesagemEvento {
 
     @Column(nullable = false)
     private boolean foiAprovado;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "unidade_medida")
+    private UnidadeMedida unidadeMedida;
+
+    @Column(name = "estavel")
+    private Boolean estavel;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "resultado_rn01")
+    private ResultadoRN01 resultadoRN01;
 
     @ManyToOne
     @JoinColumn(name = "producao_id")
