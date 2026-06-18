@@ -1,6 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.interface_ui.exceptions;
 
 import com.senai.npsv_gestor_tintas_backend.domain.exception.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.util.*;
 
+@Hidden
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
