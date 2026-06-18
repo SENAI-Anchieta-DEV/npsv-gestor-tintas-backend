@@ -1,7 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.util;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.ItemFormulaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.formula.FormulaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.formula.ItemFormulaRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Formula;
 
 import java.math.BigDecimal;

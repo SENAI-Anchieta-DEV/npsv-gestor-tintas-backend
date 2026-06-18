@@ -1,6 +1,6 @@
 package com.senai.npsv_gestor_tintas_backend.integration.controller;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.formula.FormulaRequestDTO;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.CategoriaProduto;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Usuario;
@@ -34,26 +34,13 @@ class FormulaControllerIntegrationTest {
     @LocalServerPort
     private int port;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private CategoriaProdutoRepository categoriaRepository;
-
-    @Autowired
-    private ProdutoRepository produtoRepository;
-
-    @Autowired
-    private FormulaRepository formulaRepository;
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    @Autowired private UsuarioRepository usuarioRepository;
+    @Autowired private CategoriaProdutoRepository categoriaRepository;
+    @Autowired private ProdutoRepository produtoRepository;
+    @Autowired private FormulaRepository formulaRepository;
+    @Autowired private JwtService jwtService;
+    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired private JdbcTemplate jdbcTemplate;
 
     private String adminToken;
     private Produto produto;

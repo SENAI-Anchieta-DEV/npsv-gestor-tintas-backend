@@ -1,7 +1,7 @@
 package com.senai.npsv_gestor_tintas_backend.unit.service;
 
-import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaRequestDTO;
-import com.senai.npsv_gestor_tintas_backend.application.dto.FormulaResponseDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.formula.FormulaRequestDTO;
+import com.senai.npsv_gestor_tintas_backend.application.dto.formula.FormulaResponseDTO;
 import com.senai.npsv_gestor_tintas_backend.application.service.FormulaService;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Formula;
 import com.senai.npsv_gestor_tintas_backend.domain.entity.Produto;
@@ -94,6 +94,6 @@ class FormulaServiceTest {
         List<FormulaResponseDTO> resultado = formulaService.listarFormulas();
 
         assertEquals(1, resultado.size());
-        assertEquals("FORM-001", resultado.get(0).codigoInterno());
+        assertEquals("FORM-001", resultado.getFirst().codigoInterno());
     }
 }
