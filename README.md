@@ -17,9 +17,19 @@ API REST do **Gestor Tintas**, sistema de gestão para lojas de tintas com integ
 | Banco (prod) | PostgreSQL |
 | Migrations | Flyway 12.3.0 |
 | Mensageria | Spring Integration MQTT + Eclipse Paho 1.2.5 |
+| Documentação | Springdoc OpenAPI UI (Swagger) |
 | Build | Maven (wrapper incluído) |
 | Container | Docker (Eclipse Temurin 21) |
 | Deploy | Render (Docker runtime) |
+
+---
+
+## 📚 Documentação da API (Swagger)
+
+O projeto possui documentação interativa da API gerada automaticamente via **OpenAPI/Swagger**. Com a aplicação em execução, você pode visualizar os endpoints, os *schemas* dos DTOs e testar as requisições diretamente pelo navegador:
+
+- **Swagger UI:** [https://gestor-tintas-backend-api.onrender.com/swagger-ui/index.html](https://gestor-tintas-backend-api.onrender.com/swagger-ui/index.html)
+- **OpenAPI JSON:** [https://gestor-tintas-backend-api.onrender.com/v3/api-docs](https://gestor-tintas-backend-api.onrender.com/v3/api-docs)
 
 ---
 
