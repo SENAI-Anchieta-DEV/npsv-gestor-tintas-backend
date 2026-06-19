@@ -38,7 +38,8 @@ class AuthControllerIntegrationTest {
 
         usuarioRepository.deleteAll();
 
-        Usuario usuario = UsuarioCreator.criarUsuarioAdminNovo();
+        Usuario usuario = usuarioRepository.findByEmail("admin@gestortintas.com")
+                .orElseGet(() -> usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo()));
         usuario.setSenha(passwordEncoder.encode("senha123"));
 
         usuarioRepository.saveAndFlush(usuario);

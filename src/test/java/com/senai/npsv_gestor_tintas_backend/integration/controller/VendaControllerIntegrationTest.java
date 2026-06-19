@@ -54,7 +54,8 @@ public class VendaControllerIntegrationTest {
     void setup() {
         RestAssured.port = this.port;
 
-        vendedorSalvo = usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo());
+        vendedorSalvo = usuarioRepository.findByEmail("admin@gestortintas.com")
+                .orElseGet(() -> usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo()));
 
         vendedorToken = jwtService.generateToken(vendedorSalvo.getEmail(), vendedorSalvo.getRole().name());
 

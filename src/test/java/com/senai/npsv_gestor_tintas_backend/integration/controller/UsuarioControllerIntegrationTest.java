@@ -41,9 +41,8 @@ class UsuarioControllerIntegrationTest {
     void setup() {
         RestAssured.port = port;
 
-        Usuario admin = UsuarioCreator.criarUsuarioAdminNovo();
-
-        usuarioRepository.saveAndFlush(admin);
+        Usuario admin = usuarioRepository.findByEmail("admin@gestortintas.com")
+                .orElseGet(() -> usuarioRepository.saveAndFlush(UsuarioCreator.criarUsuarioAdminNovo()));
 
         adminToken = jwtService.generateToken(admin.getEmail(), admin.getRole().name());;
     }

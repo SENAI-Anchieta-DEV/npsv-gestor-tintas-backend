@@ -55,7 +55,8 @@ class FormulaControllerIntegrationTest {
         categoriaRepository.deleteAll();
         usuarioRepository.deleteAll();
 
-        Usuario admin = UsuarioCreator.criarUsuarioAdminNovo();
+        Usuario admin = usuarioRepository.findByEmail("admin@gestortintas.com")
+                .orElseGet(() -> usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo()));
         admin.setSenha(passwordEncoder.encode("senha123"));
         usuarioRepository.saveAndFlush(admin);
 
