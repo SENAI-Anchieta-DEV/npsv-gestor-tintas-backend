@@ -47,16 +47,26 @@ public class ProducaoControllerIntegrationTest {
     void setup() {
         RestAssured.port = this.port;
 
-        Usuario admin = usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo());
+        Usuario admin = usuarioRepository.findByEmail("admin@gestortintas.com")
+                .orElseGet(() -> usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo()));
         adminToken = jwtService.generateToken(admin.getEmail(), "ADMIN");
 
-        Usuario colorista = usuarioRepository.save(UsuarioCreator.criarUsuarioColoristaNovo());
+        Usuario colorista = usuarioRepository.findByEmail("colorista@gestortintas.com")
+                .orElseGet(() -> usuarioRepository.save(UsuarioCreator.criarUsuarioColoristaNovo()));
 
-        CategoriaProduto cat = categoriaRepository.save(ProdutoCreator.criarCategoriaNova());
-        Produto insumoNovo = ProdutoCreator.criarProdutoNovo();
-        insumoNovo.setCategoria(cat);
-        insumoSalvo = produtoRepository.save(insumoNovo);
-        Formula formula = formulaRepository.save(ProducaoCreator.criarFormulaNova(insumoSalvo));
+        CategoriaProduto cat = categoriaRepository.findAll().stream().findFirst()
+                .orElseGet(() -> categoriaRepository.save(ProdutoCreator.criarCategoriaNova()));
+
+        insumoSalvo = produtoRepository.findByCodigoBarras("789123456")
+                .orElseGet(() -> {
+                    Produto insumoNovo = ProdutoCreator.criarProdutoNovo();
+                    insumoNovo.setCategoria(cat);
+                    return produtoRepository.save(insumoNovo);
+                });
+
+
+        Formula formula = formulaRepository.findAll().stream().findFirst()
+                .orElseGet(() -> formulaRepository.save(ProducaoCreator.criarFormulaNova(insumoSalvo)));
 
         producaoSalva = producaoRepository.save(ProducaoCreator.criarProducaoProcessandoNova(colorista, formula));
 
@@ -118,6 +128,5 @@ public class ProducaoControllerIntegrationTest {
         formulaRepository.deleteAll();
         produtoRepository.deleteAll();
         categoriaRepository.deleteAll();
-        usuarioRepository.deleteAll();
     }
 }

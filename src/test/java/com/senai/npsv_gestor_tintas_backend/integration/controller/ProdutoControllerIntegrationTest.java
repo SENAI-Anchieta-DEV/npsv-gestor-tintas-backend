@@ -42,7 +42,8 @@ public class ProdutoControllerIntegrationTest {
     void setup() {
         RestAssured.port = this.port;
 
-        Usuario admin = usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo());
+        Usuario admin = usuarioRepository.findByEmail("admin@gestortintas.com")
+                .orElseGet(() -> usuarioRepository.save(UsuarioCreator.criarUsuarioAdminNovo()));
 
         categoriaBase = categoriaRepository.save(ProdutoCreator.criarCategoriaNova());
 

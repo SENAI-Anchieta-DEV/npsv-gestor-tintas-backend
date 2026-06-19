@@ -24,6 +24,16 @@ public class UsuarioCreator {
                 .build();
     }
 
+    public static Usuario criarUsuarioVendedorNovo() {
+        return Usuario.builder()
+                .nome("Vendedor")
+                .email("vendedor@gestortintas.com")
+                .senha("senha123")
+                .role(Role.VENDEDOR)
+                .ativo(true)
+                .build();
+    }
+
     public static Usuario criarUsuarioAdminSalvo() {
         Usuario admin = criarUsuarioAdminNovo();
         admin.setId("usr-admin");
@@ -34,5 +44,11 @@ public class UsuarioCreator {
         Usuario colorista = criarUsuarioColoristaNovo();
         colorista.setId("usr-colorista");
         return colorista;
+    }
+
+    public static Usuario criarUsuarioVendedorSalvo() {
+        Usuario vendedor = criarUsuarioVendedorNovo();
+        vendedor.setId("usr-vendedor");
+        return vendedor;
     }
 }
